@@ -1,5 +1,9 @@
+import 'package:egfr_calculator/Classes/AccountsClass.dart';
 import 'package:flutter/material.dart';
 import 'package:egfr_calculator/Colors.dart';
+
+import '../DataAccess.dart';
+import 'HomePage.dart';
 class SignUpPage extends StatefulWidget{
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -10,6 +14,16 @@ class _SignUpPageState extends State<SignUpPage> {
   String _confirmEmailController;
   String _passwordController;
   String _confirmPasswordController;
+  String _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = "";
+    _passwordController = "";
+    _error = "";
+  }
+
   @override
   Widget build(BuildContext context) {
    return Scaffold(
@@ -23,6 +37,7 @@ class _SignUpPageState extends State<SignUpPage> {
        children: [Column(
          crossAxisAlignment: CrossAxisAlignment.start,
          children: [
+           Text(_error,style: errorTextStyle,),
            Text("Email",style: basicText),
            SizedBox(height: 5,),
            TextField(
@@ -58,9 +73,55 @@ class _SignUpPageState extends State<SignUpPage> {
                _confirmPasswordController = value;
              },
            ),
+           ElevatedButton(
+               style: elevatedButtonStyle,
+               onPressed: (){
+                 _signUp();
+               },
+               child: Text("Sign Up")
+           )
          ],
        )],
      )
    );
   }
+
+  _signUp(){
+    if(MediaQuery.of(context).viewInsets.bottom != 0){
+      FocusScope.of(context).unfocus();
+    }
+
+    if(_emailController == "" || _passwordController == "" || _confirmEmailController == "" || _confirmPasswordController == ""){
+      setState(() {
+        _error = "Fields cannot be left blank";
+      });
+    }
+    else if(_emailController != _confirmEmailController){
+      setState(() {
+        _error = "Emails don't match";
+      });
+    }
+    else if(_passwordController != _confirmPasswordController){
+      setState(() {
+        _error = "Passwords don't match";
+      });
+    }
+    else{
+      Account account = new Account(
+          email: _emailController,
+          password: _passwordController
+      );
+
+      DataAccess.instance.insertAccount(account);
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        PageRouteBuilder(pageBuilder: (_, __, ___) => HomePage()),
+      );
+    }
+
+
+
+  }
+
 }

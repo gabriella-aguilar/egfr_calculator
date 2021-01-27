@@ -1,4 +1,7 @@
+import 'package:egfr_calculator/Classes/AccountsClass.dart';
 import 'package:egfr_calculator/Colors.dart';
+import 'package:egfr_calculator/DataAccess.dart';
+import 'package:egfr_calculator/Screens/HomePage.dart';
 import 'package:egfr_calculator/Screens/SignUpPage.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +13,15 @@ class LoginPage extends StatefulWidget{
 class _LoginPageState extends State<LoginPage> {
   String _usernameController;
   String _passwordController;
+  String _error;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _error = "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +48,9 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    _error , style: errorTextStyle,
+                  ),
                  // Text("Login",style: basicText,),
                   Text("Username:",style: basicText,),
                   SizedBox(height: 5,),
@@ -72,10 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                         style: elevatedButtonStyle,
                         onPressed: (){
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(pageBuilder: (_, __, ___) => SignUpPage()),
-                          );
+                          _login();
                         },
                         child: Text("Go!")
                     )],
@@ -88,4 +100,22 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  _login() async{
+    Account account = await DataAccess.instance.getSpecificAccount(_usernameController);
+    if(account != null && account.getPassword() == _passwordController){
+      Navigator.push(
+        context,
+        PageRouteBuilder(pageBuilder: (_, __, ___) => HomePage()),
+      );
+    }
+    else{
+      print("Error");
+      setState(() {
+        _error = "User doesn't exist or password incorrect.";
+      });
+    }
+
+  }
+
 }

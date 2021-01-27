@@ -36,6 +36,12 @@ var elevatedButtonStyle = ButtonStyle(
     textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(color: Colors.white,fontSize: 18)),
 );
 
+TextStyle errorTextStyle = TextStyle(
+  color: Colors.red,
+  fontSize: 18,
+  fontWeight: FontWeight.bold
+);
+
 final ThemeData trackData = _buildTrackTheme();
 
 ThemeData _buildTrackTheme() {
