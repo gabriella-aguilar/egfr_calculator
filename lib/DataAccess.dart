@@ -37,7 +37,7 @@ class DataAccess{
   Future _create(Database db, int version) async {
 
     db.execute("CREATE TABLE accounts(email TEXT PRIMARY KEY, password TEXT)");
-    db.execute("CREATE TABLE profiles(name TEXT PRIMARY KEY, dob TEXT, ethnicity INT, account TEXT)");
+    db.execute("CREATE TABLE profiles(name TEXT PRIMARY KEY, dob TEXT, gender INT, ethnicity INT, account TEXT)");
 
   }
 
@@ -61,6 +61,7 @@ class DataAccess{
     ).catchError((error) {
       print("Something went wrong: ${error.message}");
     });
+    print("Inserting "+ profile.getName());
   }
 
   Future<List<Profile>> getAllProfiles(String email) async {
@@ -70,6 +71,7 @@ class DataAccess{
       return Profile(
           name: maps[i]['name'],
           dob: maps[i]['dob'],
+          gender: maps[i]['gender'],
           ethnicity: maps[i]['ethnicity'],
           account: maps[i]['account']
       );

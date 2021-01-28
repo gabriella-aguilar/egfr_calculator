@@ -3,11 +3,13 @@ class Profile{
   final String dob;
   final int ethnicity;
   final String account;
+  final int gender;
 
-  Profile({this.name, this.dob,this.ethnicity,this.account});
+  Profile({this.name, this.dob,this.gender,this.ethnicity,this.account});
 
   Map<String, dynamic> toMap() {
     return {
+      'gender': gender,
       'name': name,
       'dob': dob,
       'ethnicity': ethnicity,
@@ -15,6 +17,8 @@ class Profile{
 
     };
   }
+
+  int getGender(){return gender;}
 
   String getName(){return name;}
 

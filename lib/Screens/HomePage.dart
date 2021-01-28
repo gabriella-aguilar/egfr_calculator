@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         actions: [
           IconButton(icon: Icon(Icons.add_circle,color: Colors.white,), onPressed: (){
+            Navigator.pop(context);
             Navigator.push(
               context,
               PageRouteBuilder(pageBuilder: (_, __, ___) => AddProfilePage()),
@@ -46,9 +47,14 @@ class _HomePageState extends State<HomePage> {
 
   _setUp() async{
     List<Profile> p = await DataAccess.instance.getAllProfiles(Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail());
-    setState(() {
-      profiles.addAll(p);
-    });
+    if(profiles != null && profiles.isNotEmpty){
+      setState(() {
+        profiles.addAll(p);
+      });
+    }
+    else{
+      print("Profiles is empty or null");
+    }
   }
 
   List<Widget> _getProfiles() {

@@ -1,6 +1,10 @@
+import 'package:egfr_calculator/Classes/ProfileClass.dart';
+import 'package:egfr_calculator/DataAccess.dart';
+import 'package:egfr_calculator/Screens/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
+import 'package:egfr_calculator/Context.dart';
+import 'package:provider/provider.dart';
 import '../Colors.dart';
 
 class AddProfilePage extends StatefulWidget {
@@ -15,6 +19,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
   Icon manButton;
   bool _gender; //true -> female false->male
   bool _ethnicity;
+  String _error;
 
   @override
   void initState() {
@@ -23,6 +28,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
     _nameController = "";
     _gender = true;
     _ethnicity = false;
+    _error = "";
   }
 
   @override
@@ -39,6 +45,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: [
+          Text(_error,style: errorTextStyle,),
           Text(
             "Name",
             style: basicText,
@@ -140,7 +147,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
           ),
           ElevatedButton(
               style: elevatedButtonStyle,
-              onPressed: () {},
+              onPressed: _submit,
               child: Text("Submit"))
         ],
       ),
@@ -171,15 +178,28 @@ class _AddProfilePageState extends State<AddProfilePage> {
     return sDate;
   }
 
-  _genderToggle(String id) {
-    if (id == "w") {
+
+  _submit(){
+    if(_nameController != "" && _dob != dateFormat(DateTime.now())){
+      Profile profile = new Profile(
+          name: _nameController,
+          dob: _dob,
+          ethnicity: (_ethnicity ? 1 : 0),
+          gender: (_gender ? 1 : 0),
+          account: Provider.of<ContextInfo>(context, listen: false)
+              .getCurrentAccount()
+              .getEmail());
+      DataAccess.instance.insertProfile(profile);
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        PageRouteBuilder(pageBuilder: (_, __, ___) => HomePage()),
+      );
+    }
+    else{
       setState(() {
-        womanButton = Icon(Icons.radio_button_checked);
-        manButton = Icon(Icons.radio_button_unchecked);
+        _error = "Fields cannot be left blank";
       });
-    } else {
-      womanButton = Icon(Icons.radio_button_unchecked);
-      manButton = Icon(Icons.radio_button_checked);
     }
   }
 }
