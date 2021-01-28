@@ -1,7 +1,8 @@
 import 'package:egfr_calculator/Classes/AccountsClass.dart';
 import 'package:flutter/material.dart';
 import 'package:egfr_calculator/Colors.dart';
-
+import 'package:provider/provider.dart';
+import 'package:egfr_calculator/Context.dart';
 import '../DataAccess.dart';
 import 'HomePage.dart';
 class SignUpPage extends StatefulWidget{
@@ -113,6 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
       );
 
       DataAccess.instance.insertAccount(account);
+      Provider.of<ContextInfo>(context, listen: false).setCurrentAccount(account);
       Navigator.pop(context);
       Navigator.push(
         context,

@@ -63,9 +63,9 @@ class DataAccess{
     });
   }
 
-  Future<List<Profile>> getAllProfiles() async {
+  Future<List<Profile>> getAllProfiles(String email) async {
     final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('profiles');
+    final List<Map<String, dynamic>> maps = await db.query('profiles',where: "account = ?",whereArgs: [email]);
     return List.generate(maps.length, (i) {
       return Profile(
           name: maps[i]['name'],

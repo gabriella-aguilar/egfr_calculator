@@ -1,4 +1,5 @@
-
+import 'package:provider/provider.dart';
+import 'package:egfr_calculator/Context.dart';
 import 'package:egfr_calculator/Classes/ProfileClass.dart';
 import 'package:egfr_calculator/DataAccess.dart';
 import 'package:egfr_calculator/Screens/AddProfile.dart';
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   _setUp() async{
-    List<Profile> p = await DataAccess.instance.getAllProfiles();
+    List<Profile> p = await DataAccess.instance.getAllProfiles(Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail());
     setState(() {
       profiles.addAll(p);
     });

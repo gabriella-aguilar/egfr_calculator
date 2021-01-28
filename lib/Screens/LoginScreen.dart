@@ -4,6 +4,8 @@ import 'package:egfr_calculator/DataAccess.dart';
 import 'package:egfr_calculator/Screens/HomePage.dart';
 import 'package:egfr_calculator/Screens/SignUpPage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:egfr_calculator/Context.dart';
 
 class LoginPage extends StatefulWidget{
   @override
@@ -104,6 +106,7 @@ class _LoginPageState extends State<LoginPage> {
   _login() async{
     Account account = await DataAccess.instance.getSpecificAccount(_usernameController);
     if(account != null && account.getPassword() == _passwordController){
+      Provider.of<ContextInfo>(context, listen: false).setCurrentAccount(account);
       Navigator.push(
         context,
         PageRouteBuilder(pageBuilder: (_, __, ___) => HomePage()),
