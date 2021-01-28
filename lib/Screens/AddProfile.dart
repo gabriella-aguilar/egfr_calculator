@@ -14,6 +14,7 @@ class AddProfilePage extends StatefulWidget {
 
 class _AddProfilePageState extends State<AddProfilePage> {
   String _dob;
+  DateTime _date;
   String _nameController;
   Icon womanButton;
   Icon manButton;
@@ -164,6 +165,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
     if (picked != null && picked != DateTime.now()) {
       setState(() {
         // _dobController.text = sDate;
+        _date = picked;
         _dob = dateFormat(picked);
       });
     }
@@ -174,7 +176,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
     if(_nameController != "" && _dob != dateFormat(DateTime.now())){
       Profile profile = new Profile(
           name: _nameController,
-          dob: _dob,
+          dob: _date.toString(),
           ethnicity: (_ethnicity ? 1 : 0),
           gender: (_gender ? 1 : 0),
           account: Provider.of<ContextInfo>(context, listen: false)

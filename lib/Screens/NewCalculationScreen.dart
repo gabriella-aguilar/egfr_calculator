@@ -19,6 +19,12 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
   double _creatine;
 
   @override
+  void initState() {
+    _creatine = -1;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +48,11 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
             ],
           ),
           ElevatedButton(
-              onPressed: _calculate(),
+              onPressed: (){
+                if(_creatine != -1){
+                  _calculate();
+                }
+              },
               child: Text("Calculate"),
             style: elevatedButtonStyle,
           )
