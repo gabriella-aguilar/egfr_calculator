@@ -32,7 +32,23 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
           Text(_profile.getName(),style: basicText),
           Text("DOB: "+_profile.getDOB(),style: basicText,),
           Text("Gender: "+ (_profile.getGender() == 1 ? "Female" : "Male"),style: basicText,),
-          Text("Black Ethnicity: "+ (_profile.getEthnicity() == 1 ? "Yes" : "No"), style: basicText,)
+          Text("Black Ethnicity: "+ (_profile.getEthnicity() == 1 ? "Yes" : "No"), style: basicText,),
+          ButtonBar(
+            children: [
+              ElevatedButton(
+                onPressed: (){
+
+                },
+                child: Column(
+                  children: [
+                    Icon(Icons.add_box_rounded),
+                    Text("New eGFR\nCalculation")
+                  ],
+                ),
+                style: elevatedButtonStyle,
+              )
+            ],
+          ),
         ],
       ),
     );

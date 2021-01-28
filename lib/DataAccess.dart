@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Directory;
+import 'package:egfr_calculator/Classes/CalculationClass.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart' show join;
@@ -37,8 +38,20 @@ class DataAccess{
   Future _create(Database db, int version) async {
 
     db.execute("CREATE TABLE accounts(email TEXT PRIMARY KEY, password TEXT)");
-    db.execute("CREATE TABLE profiles(name TEXT PRIMARY KEY, dob TEXT, gender INT, ethnicity INT, account TEXT)");
+    db.execute("CREATE TABLE profiles(name TEXT, dob TEXT, gender INT, ethnicity INT, account TEXT, PRIMARY KEY(name,account))");
+    db.execute("CREATE TABLE calculations(date TEXT, egfr REAL, account TEXT, profile TEXT)");
 
+  }
+
+  Future<void> insertCalculation(Calculation calculation) async {
+    final Database db =await database;
+    await db.insert(
+      'calculations',
+      calculation.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    ).catchError((error) {
+      print("Something went wrong: ${error.message}");
+    });
   }
 
   Future<void> insertAccount(Account account) async {
@@ -73,6 +86,19 @@ class DataAccess{
           dob: maps[i]['dob'],
           gender: maps[i]['gender'],
           ethnicity: maps[i]['ethnicity'],
+          account: maps[i]['account']
+      );
+    });
+  }
+
+  Future<List<Calculation>> getCalculations(String account, String profile) async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('calculations',where: "account = ? AND profile = ?",whereArgs: [account,profile]);
+    return List.generate(maps.length, (i) {
+      return Calculation(
+          date: maps[i]['date'],
+          egfr: maps[i]['egfr'],
+          profile: maps[i]['profile'],
           account: maps[i]['account']
       );
     });
