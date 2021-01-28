@@ -95,3 +95,11 @@ TextTheme _buildTrackTextTheme(TextTheme base) {
   );
 }
 
+String dateFormat(DateTime d) {
+  String sDate = d.day.toString() +
+      ' - ' +
+      d.month.toString() +
+      ' - ' +
+      d.year.toString();
+  return sDate;
+}

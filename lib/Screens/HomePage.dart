@@ -1,3 +1,4 @@
+import 'package:egfr_calculator/Screens/ViewProfile.dart';
 import 'package:provider/provider.dart';
 import 'package:egfr_calculator/Context.dart';
 import 'package:egfr_calculator/Classes/ProfileClass.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
+
         children: _getProfiles(),
       ),
     );
@@ -62,8 +63,24 @@ class _HomePageState extends State<HomePage> {
     List<Widget> wids = new List<Widget>();
     if(profiles != null && profiles.isNotEmpty){
       profiles.forEach((element) {
-        wids.add(ListTile(
-          title: Text(element.getName(),style: basicText,),
+        wids.add(Container(
+          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+          decoration: BoxDecoration(
+            color: backBlue,
+            border: Border(
+              bottom: BorderSide(width: 1.0, color: darkBlueAccent),
+            ),
+          ),
+          child: ListTile(
+            title: Text(element.getName(),style: basicText,),
+            onTap: (){
+              Provider.of<ContextInfo>(context, listen: false).setCurrentProfile(element);
+              Navigator.push(
+                context,
+                PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
+              );
+            },
+          ),
         ));
       });
     }

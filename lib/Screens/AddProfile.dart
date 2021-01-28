@@ -169,15 +169,6 @@ class _AddProfilePageState extends State<AddProfilePage> {
     }
   }
 
-  String dateFormat(DateTime d) {
-    String sDate = d.day.toString() +
-        ' - ' +
-        d.month.toString() +
-        ' - ' +
-        d.year.toString();
-    return sDate;
-  }
-
 
   _submit(){
     if(_nameController != "" && _dob != dateFormat(DateTime.now())){
