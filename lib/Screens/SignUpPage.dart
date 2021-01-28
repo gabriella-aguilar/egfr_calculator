@@ -87,7 +87,8 @@ class _SignUpPageState extends State<SignUpPage> {
    );
   }
 
-  _signUp(){
+  _signUp() async{
+
     if(MediaQuery.of(context).viewInsets.bottom != 0){
       FocusScope.of(context).unfocus();
     }

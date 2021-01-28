@@ -106,7 +106,7 @@ class DataAccess{
 
   Future<Account> getSpecificAccount(String name) async {
     final Database db = await database;
-    // final List<Map<String, dynamic>> maps =  await db.rawQuery('SELECT * FROM Symptom WHERE name=?',[name]);
+
     final List<Map<String, dynamic>> maps = await db.query("accounts",where: "email = ?",whereArgs: [name]);
     List<Account> list =  List.generate(maps.length, (i) {
       return Account(
@@ -121,5 +121,11 @@ class DataAccess{
       return null;
     }
   }
+
+  void deleteCalculation(String date,String profile,String account) async{
+    final Database db = await database;
+    db.delete('calculations',where: "date = ? AND profile = ? AND account = ?" ,whereArgs: [date,profile,account]);
+  }
+
 }
 
