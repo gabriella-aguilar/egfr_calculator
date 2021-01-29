@@ -52,6 +52,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
         centerTitle: true,
       ),
       body: ListView(
+        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
@@ -65,8 +66,10 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
             child: Column(
               children: [
                 Text("Stage "+_stage, style: basicText,),
+                SizedBox(height: 5),
                 Text("eGFR: "+ _calculation.getEgfr().toString()),
                 ButtonBar(
+                  alignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       onPressed: (){

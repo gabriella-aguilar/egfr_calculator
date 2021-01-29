@@ -1,6 +1,7 @@
 import 'package:egfr_calculator/Classes/CalculationClass.dart';
 import 'package:egfr_calculator/Classes/ProfileClass.dart';
 import 'package:egfr_calculator/DataAccess.dart';
+import 'package:egfr_calculator/Screens/ViewProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:egfr_calculator/Context.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,25 @@ class _PreEditDataPageState extends State<PreEditDataPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: backBlue,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                      pageBuilder: (_, __, ___) => ViewProfilePage()),
+                );
+              },
+            );
+            //return Container();
+          },
+        ),
       backgroundColor: newBlue,
       title: Text("Profiles",style: appBarStyle,),
       centerTitle: true,
@@ -65,6 +85,7 @@ class _PreEditDataPageState extends State<PreEditDataPage> {
             trailing: IconButton(icon: Icon(Icons.delete),
               onPressed: (){
                 DataAccess.instance.deleteCalculation(element.getDate(), element.getProfile(), element.getAccount());
+                _setUp();
             },),
 
           ),

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import '../Colors.dart';
+import 'ViewProfile.dart';
 
 class NewCalculationPage extends StatefulWidget{
   @override
@@ -26,37 +27,58 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Building New Calc");
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: backBlue,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                      pageBuilder: (_, __, ___) => ViewProfilePage()),
+                );
+              },
+            );
+            //return Container();
+          },
+        ),
         backgroundColor: newBlue,
         title: Text("New Calculation",style: appBarStyle,),
         centerTitle: true,
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
-        children: [
-          Row(
-            children: [
-              Text("Creatine: ",style: basicText,),
-              TextField(
-                keyboardType: TextInputType.number,
-                decoration: inputDecoration,
-                onChanged: (value){
-                  _creatine = double.parse(value);
-                },
-              )
-            ],
-          ),
-          ElevatedButton(
-              onPressed: (){
-                if(_creatine != -1){
-                  _calculate();
-                }
+        children: [Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Creatine: ",style: basicText,),
+            SizedBox(height: 5,),
+            TextField(
+              keyboardType: TextInputType.number,
+              decoration: inputDecoration,
+              onChanged: (value){
+                _creatine = double.parse(value);
               },
-              child: Text("Calculate"),
-            style: elevatedButtonStyle,
-          )
-        ],
+            ),
+            SizedBox(height: 5,),
+            ElevatedButton(
+                onPressed: (){
+                  if(_creatine != -1){
+                    _calculate();
+                  }
+                },
+                child: Text("Calculate"),
+              style: elevatedButtonStyle,
+            )
+          ],
+        )],
       ),
     );
   }

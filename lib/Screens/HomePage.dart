@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> {
 
   _setUp() async{
     List<Profile> p = await DataAccess.instance.getAllProfiles(Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail());
+
     profiles = new List<Profile>();
     if(p != null && p.isNotEmpty){
       setState(() {
