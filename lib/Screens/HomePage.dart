@@ -14,30 +14,47 @@ class HomePage extends StatefulWidget{
 
 class _HomePageState extends State<HomePage> {
 
+  bool mode; //true -> normal false-> editting
   List<Profile> profiles;
 
   @override
   void initState() {
+    mode = true;
     super.initState();
     _setUp();
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> reg = [
+      IconButton(icon: Icon(Icons.edit,color: Colors.white,), onPressed: (){
+        setState(() {
+          mode = false;
+        });
+      }),
+      IconButton(icon: Icon(Icons.add_circle,color: Colors.white,), onPressed: (){
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        PageRouteBuilder(pageBuilder: (_, __, ___) => AddProfilePage()),
+      );
+    }),
+    ];
+
+    List<Widget> editting = [
+      IconButton(icon: Icon(Icons.done,color: Colors.white,), onPressed: (){
+        setState(() {
+          mode = true;
+        });
+      }),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: newBlue,
         title: Text("Profiles",style: appBarStyle,),
         centerTitle: true,
-        actions: [
-          IconButton(icon: Icon(Icons.add_circle,color: Colors.white,), onPressed: (){
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              PageRouteBuilder(pageBuilder: (_, __, ___) => AddProfilePage()),
-            );
-          })
-        ],
+        actions:mode ? reg : editting
       ),
       body: ListView(
 
@@ -74,12 +91,24 @@ class _HomePageState extends State<HomePage> {
           ),
           child: ListTile(
             title: Text(element.getName(),style: basicText,),
+            trailing: mode ? null : Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(icon: Icon(Icons.edit,color: newBlue,), onPressed: (){
+
+                }),
+                IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
+                  _deleteProf(element.getName());
+                }),
+              ],
+            ),
             onTap: (){
+              if(mode){
               Provider.of<ContextInfo>(context, listen: false).setCurrentProfile(element);
               Navigator.push(
                 context,
                 PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
-              );
+              );}
             },
           ),
         ));
@@ -89,5 +118,11 @@ class _HomePageState extends State<HomePage> {
       wids.add(Text("No Profiles"));
     }
     return wids;
+  }
+
+  _deleteProf(String name) async{
+    String account = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    DataAccess.instance.deleteProfile(name, account);
+    _setUp();
   }
 }

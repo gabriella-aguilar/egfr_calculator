@@ -112,6 +112,10 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       spots.add(FlSpot(x,egfr));
     });
 
+    if(spots == null || spots.isEmpty){
+      return Container(height: 0,);
+    }
+
     return AspectRatio(
       aspectRatio: 1.5,
         child: Container(

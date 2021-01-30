@@ -127,5 +127,10 @@ class DataAccess{
     db.delete('calculations',where: "date = ? AND profile = ? AND account = ?" ,whereArgs: [date,profile,account]);
   }
 
+  void deleteProfile(String profile,String account) async{
+    final Database db = await database;
+    db.delete('profiles',where: "name = ? AND account = ?" ,whereArgs: [profile,account]);
+  }
+
 }
 
