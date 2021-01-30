@@ -27,8 +27,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   @override
   void initState() {
     super.initState();
-    _profile =
-        Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
+    _calculations = new List<Calculation>();
+    _profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
     _getCalculations();
   }
 
@@ -62,43 +62,41 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
           SizedBox(
             height: 5,
           ),
-          // _calcGraph(),
+           _calcGraph(),
+          SizedBox(height: 5,),
           // _getSplineChart(),
           _getCalcListCard(),
-          ButtonBar(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => NewCalculationPage()),
-                  );
-                },
-                child: Column(
-                  children: [
-                    Icon(Icons.add_box_rounded),
-                    Text("New eGFR\nCalculation")
-                  ],
-                ),
-                style: elevatedButtonStyle,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => PreEditDataPage()),
-                  );
-                },
-                child: Column(
-                  children: [Icon(Icons.edit), Text("Edit Data")],
-                ),
-                style: elevatedButtonStyle,
-              )
-            ],
+          SizedBox(height: 5,),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => NewCalculationPage()),
+              );
+            },
+            child: Row(
+              children: [
+                Icon(Icons.add_box_rounded),
+                Text("New eGFR Calculation")
+              ],
+            ),
+            style: elevatedButtonStyle,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => PreEditDataPage()),
+              );
+            },
+            child: Row(
+              children: [Icon(Icons.edit), Text("Edit Data")],
+            ),
+            style: elevatedButtonStyle,
           ),
         ],
       ),
@@ -106,18 +104,27 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   }
 
   Widget _calcGraph() {
-    if (_calculations != null && _calculations.isNotEmpty) {
-      return AspectRatio(
-          aspectRatio: 1.70,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: darkBlueAccent),
-              borderRadius: BorderRadius.all(Radius.circular(10.0) //
-                  ),
+    List<FlSpot> spots = new List<FlSpot>();
+    _calculations.forEach((element) {
+      DateTime date = DateTime.parse(element.getDate());
+      double x = date.month + (date.day /30);
+      double egfr = element.getEgfr();
+      spots.add(FlSpot(x,egfr));
+    });
+
+    return AspectRatio(
+      aspectRatio: 1.5,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: darkBlueAccent),
+            borderRadius: BorderRadius.all(
+                Radius.circular(10.0) //
             ),
-            child: LineChart(LineChartData(
+          ),
+          child: LineChart(
+              LineChartData(
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: true,
@@ -139,10 +146,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                   bottomTitles: SideTitles(
                     showTitles: true,
                     reservedSize: 22,
-                    getTextStyles: (value) => const TextStyle(
-                        color: Color(0xff68737d),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
+                    getTextStyles: (value) =>
+                    const TextStyle(color: Color(0xff68737d), fontWeight: FontWeight.bold, fontSize: 16),
                     getTitles: (value) {
                       switch (value.toInt()) {
                         case 2:
@@ -178,17 +183,24 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     margin: 12,
                   ),
                 ),
-                borderData: FlBorderData(
-                    show: true,
-                    border:
-                        Border.all(color: const Color(0xff37434d), width: 1)),
+                borderData:
+                FlBorderData(show: true, border: Border.all(color: const Color(0xff37434d), width: 1)),
                 minX: 0,
                 maxX: 11,
                 minY: 0,
-                maxY: 30,
+                maxY: 120,
                 lineBarsData: [
                   LineChartBarData(
-                    spots: _getSpots(),
+                    spots:spots,
+                    // [
+                    //   FlSpot(0, 3),
+                    //   FlSpot(2.6, 2),
+                    //   FlSpot(4.9, 5),
+                    //   FlSpot(6.8, 3.1),
+                    //   FlSpot(8, 4),
+                    //   FlSpot(9.5, 3),
+                    //   FlSpot(11, 4),
+                    // ],
                     isCurved: true,
                     colors: gradientColors,
                     barWidth: 5,
@@ -198,16 +210,13 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     ),
                     belowBarData: BarAreaData(
                       show: true,
-                      colors: gradientColors
-                          .map((color) => color.withOpacity(0.3))
-                          .toList(),
+                      colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
                     ),
                   ),
-                ])),
-          ));
-    }
-    return Container(
-      height: 0,
+                ],
+              )
+          ),
+        )
     );
   }
 
@@ -253,8 +262,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   }
 
   _getCalculations() async {
-    _calculations = new List<Calculation>();
-
     List<Calculation> c = await DataAccess.instance
         .getCalculations(_profile.getAccount(), _profile.getName());
     if (c != null && c.isNotEmpty) {
@@ -269,9 +276,30 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     if(_calculations != null && _calculations.isNotEmpty){
       List<Widget> tiles = new List<Widget>();
       _calculations.forEach((element) {
+        double egfr = element.getEgfr();
+        String _stage = "Stage ";
+        if(egfr >= 90){
+          _stage += "1";
+        }
+        else if(egfr < 90 && egfr >= 60){
+          _stage += "2";
+        }
+        else if(egfr < 60 && egfr >= 45){
+          _stage += "3A";
+        }
+        else if(egfr < 45 && egfr >= 30){
+          _stage += "3B";
+        }
+        else if(egfr < 30 && egfr >= 15){
+          _stage += "4";
+        }
+        else{
+          _stage += "5";
+        }
         tiles.add(ListTile(
           title: Text(dateFormat(DateTime.parse(element.getDate())),style: basicText,),
           subtitle: Text(element.getEgfr().toString()),
+          trailing: Text(_stage,style:basicText),
         ));
       });
       return Container(
