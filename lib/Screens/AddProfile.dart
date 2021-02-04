@@ -159,8 +159,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
     final DateTime picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(), // Refer step 1
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
     );
     if (picked != null && picked != DateTime.now()) {
       setState(() {
