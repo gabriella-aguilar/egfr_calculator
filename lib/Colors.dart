@@ -103,3 +103,24 @@ String dateFormat(DateTime d) {
       d.year.toString();
   return sDate;
 }
+
+String getStage(double egfr){
+  if(egfr >= 90){
+   return "1";
+  }
+  else if(egfr < 90 && egfr >= 60){
+    return "2";
+  }
+  else if(egfr < 60 && egfr >= 45){
+    return "3A";
+  }
+  else if(egfr < 45 && egfr >= 30){
+    return "3B";
+  }
+  else if(egfr < 30 && egfr >= 15){
+    return "4";
+  }
+  else{
+    return "5";
+  }
+}

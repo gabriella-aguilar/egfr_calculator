@@ -1,6 +1,8 @@
 import 'package:egfr_calculator/Classes/CalculationClass.dart';
 import 'package:egfr_calculator/Classes/ProfileClass.dart';
+import 'package:egfr_calculator/Components/CalcTable.dart';
 import 'package:egfr_calculator/DataAccess.dart';
+import 'package:egfr_calculator/Screens/ExportPage.dart';
 import 'package:egfr_calculator/Screens/NewCalculationScreen.dart';
 import 'package:egfr_calculator/Screens/PreEditDataPage.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +67,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
            _calcGraph(),
           SizedBox(height: 5,),
           // _getSplineChart(),
-          _getCalcListCard(),
+          //_getCalcListCard(),
+          _getCalcTableCard(),
           SizedBox(height: 5,),
           ElevatedButton(
             onPressed: () {
@@ -95,6 +98,20 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             },
             child: Row(
               children: [Icon(Icons.edit), Text("Edit Data")],
+            ),
+            style: elevatedButtonStyle,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => ExportPage()),
+              );
+            },
+            child: Row(
+              children: [Icon(Icons.share), Text("Export")],
             ),
             style: elevatedButtonStyle,
           ),
@@ -319,5 +336,19 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       );
     }
     return Container(height: 0,);
+  }
+
+  Widget _getCalcTableCard(){
+    return Container(
+      //padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: darkBlueAccent),
+          borderRadius: BorderRadius.all(Radius.circular(10.0) //
+          ),
+        ),
+        child: CalcTable()
+
+    );
   }
 }
