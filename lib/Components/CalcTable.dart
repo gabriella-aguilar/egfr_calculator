@@ -16,9 +16,9 @@ class _CalcTableState extends State<CalcTable> {
 
   @override
   void initState() {
-    Profile profile =
-    Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
+    Profile profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
     _getCalculations(profile);
+    super.initState();
   }
 
   _getCalculations(Profile profile) async {
