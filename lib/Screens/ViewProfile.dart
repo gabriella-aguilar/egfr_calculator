@@ -5,12 +5,13 @@ import 'package:egfr_calculator/DataAccess.dart';
 import 'package:egfr_calculator/Screens/ExportPage.dart';
 import 'package:egfr_calculator/Screens/NewCalculationScreen.dart';
 import 'package:egfr_calculator/Screens/PreEditDataPage.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:egfr_calculator/Context.dart';
 import 'package:egfr_calculator/Colors.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+
 
 class ViewProfilePage extends StatefulWidget {
   @override
@@ -20,6 +21,7 @@ class ViewProfilePage extends StatefulWidget {
 class _ViewProfilePageState extends State<ViewProfilePage> {
   Profile _profile;
   List<Calculation> _calculations;
+  String _emailText = 'Export';
 
   List<Color> gradientColors = [
     const Color(0xff23b6e6),
@@ -32,6 +34,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     _calculations = new List<Calculation>();
     _profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
     _getCalculations();
+    //_createTextString();
   }
 
   @override
@@ -103,12 +106,15 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => ExportPage()),
-              );
+              // Navigator.pop(context);
+              // Navigator.push(
+              //   context,
+              //   PageRouteBuilder(
+              //       pageBuilder: (_, __, ___) => ExportPage()),
+              // );
+
+              _shareText();
+              print(_emailText);
             },
             child: Row(
               children: [Icon(Icons.share), Text("Export")],
@@ -260,27 +266,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     // ];
   }
 
-  Widget _getSplineChart(){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: darkBlueAccent),
-        borderRadius: BorderRadius.all(Radius.circular(10.0) //
-        ),
-      ),
-      child: SfCartesianChart(
-          series: <ChartSeries>[
-            // Renders spline chart
-            SplineSeries<Calculation, double>(
-                dataSource: _calculations,
-                xValueMapper: (Calculation calc, _) => DateTime.parse(calc.getDate()).month.toDouble(),
-                yValueMapper: (Calculation calc, _) => calc.getEgfr()
-            )
-          ]
-      ),
-    );
-  }
 
   _getCalculations() async {
     List<Calculation> c = await DataAccess.instance
@@ -350,5 +335,37 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
         child: CalcTable()
 
     );
+  }
+
+
+ _createTextString() {
+    String t = '';
+    if(_calculations == null || _calculations.isEmpty){
+      print('calc empty');
+    }
+    _calculations.forEach((element) {
+      DateTime date = DateTime.parse(element.getDate());
+      t = t + dateFormat(date) + " Stage " + getStage(element.getEgfr()) + " " + element.getEgfr().toStringAsFixed(3)+"\n";
+    });
+
+    setState(() {
+      print('in set state for create text');
+      print('t '+t);
+      _emailText = t;
+    });
+  }
+
+  _shareText() async {
+    String toMailId = '';
+    String subject = 'EGFR Export';
+    String body = _emailText;
+    _createTextString();
+    var url = 'mailto:$toMailId?subject=$subject&body=$body';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+
   }
 }
