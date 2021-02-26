@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:egfr_calculator/Classes/CalculationClass.dart';
 import 'package:egfr_calculator/Classes/ProfileClass.dart';
+import 'package:egfr_calculator/Classes/AccountsClass.dart';
 import 'package:egfr_calculator/Context.dart';
 import 'package:egfr_calculator/DataAccess.dart';
 import 'package:egfr_calculator/Screens/ViewCalculation.dart';
@@ -18,10 +19,12 @@ class NewCalculationPage extends StatefulWidget{
 class _NewCalculationPageState extends State<NewCalculationPage> {
 
   double _creatine;
+  Account _account;
 
   @override
   void initState() {
     _creatine = -1;
+    _account = Provider.of<ContextInfo>(context,listen: false).getCurrentAccount();
     super.initState();
   }
 
@@ -68,6 +71,8 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
               },
             ),
             SizedBox(height: 5,),
+            Text(_getUnit(),style: basicText,),
+            SizedBox(height: 5,),
             ElevatedButton(
                 onPressed: (){
                   if(_creatine != -1){
@@ -83,12 +88,31 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
     );
   }
 
+  String _getUnit(){
+    if(_account.getUnit() == 1){
+      return "mmol/L";
+    }
+    return "mg/dL";
+  }
+
+  double _convertCreatine(double start){
+      return (start / 18);
+  }
+
   _calculate(){
     Profile profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
+
+    double c;
+    if(_account.getUnit() == 2){
+      c = _convertCreatine(_creatine);
+    }else{
+      c = _creatine;
+    }
+
     DateTime dob = DateTime.parse(profile.getDOB());
     Duration dif = DateTime.now().difference(dob);
     int age = (dif.inDays / 365).truncate();
-    double egfr = 186 * pow((_creatine / 88.4),-1.154) * pow(age,-0.203);
+    double egfr = 186 * pow((c / 88.4),-1.154) * pow(age,-0.203);
     if(profile.getGender() == 1){
       egfr = egfr *0.742;
     }
@@ -103,7 +127,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
       profile: profile.getName()
     );
 
-    //DataAccess.instance.insertCalculation(calculation);
+
     Provider.of<ContextInfo>(context, listen: false).setCurrentCalculation(calculation);
     Navigator.pop(context);
     Navigator.push(

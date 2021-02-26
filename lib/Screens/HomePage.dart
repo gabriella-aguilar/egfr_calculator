@@ -1,3 +1,4 @@
+import 'package:egfr_calculator/Screens/SettingsScreen.dart';
 import 'package:egfr_calculator/Screens/ViewProfile.dart';
 import 'package:provider/provider.dart';
 import 'package:egfr_calculator/Context.dart';
@@ -27,6 +28,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> reg = [
+      IconButton(icon: Icon(Icons.settings,color: Colors.white,), onPressed: (){
+        Navigator.push(
+          context,
+          PageRouteBuilder(pageBuilder: (_, __, ___) => SettingsScreen()),
+        );
+      }),
       IconButton(icon: Icon(Icons.edit,color: Colors.white,), onPressed: (){
         setState(() {
           mode = false;
@@ -57,7 +64,7 @@ class _HomePageState extends State<HomePage> {
         actions:mode ? reg : editting
       ),
       body: ListView(
-
+        //padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: _getProfiles(),
       ),
     );
@@ -115,7 +122,16 @@ class _HomePageState extends State<HomePage> {
       });
     }
     else{
-      wids.add(Text("No Profiles"));
+      wids.add(Container(
+        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("No Profiles",style: basicText,)
+          ],
+        ),
+      ));
     }
     return wids;
   }

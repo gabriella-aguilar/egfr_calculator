@@ -37,7 +37,7 @@ class DataAccess{
 
   Future _create(Database db, int version) async {
 
-    db.execute("CREATE TABLE accounts(email TEXT PRIMARY KEY, password TEXT)");
+    db.execute("CREATE TABLE accounts(email TEXT PRIMARY KEY, password TEXT, unit INT)");
     db.execute("CREATE TABLE profiles(name TEXT, dob TEXT, gender INT, ethnicity INT, account TEXT, PRIMARY KEY(name,account))");
     db.execute("CREATE TABLE calculations(date TEXT, egfr REAL, account TEXT, profile TEXT)");
 
@@ -106,7 +106,6 @@ class DataAccess{
 
   Future<Account> getSpecificAccount(String name) async {
     final Database db = await database;
-
     final List<Map<String, dynamic>> maps = await db.query("accounts",where: "email = ?",whereArgs: [name]);
     List<Account> list =  List.generate(maps.length, (i) {
       return Account(
@@ -122,6 +121,11 @@ class DataAccess{
     }
   }
 
+  Future<Map<String,dynamic>> _getAccountRaw(String email) async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query("accounts",where: "email = ?",whereArgs: [email]);
+    return maps[0];
+  }
   void deleteCalculation(String date,String profile,String account) async{
     final Database db = await database;
     db.delete('calculations',where: "date = ? AND profile = ? AND account = ?" ,whereArgs: [date,profile,account]);
@@ -130,6 +134,16 @@ class DataAccess{
   void deleteProfile(String profile,String account) async{
     final Database db = await database;
     db.delete('profiles',where: "name = ? AND account = ?" ,whereArgs: [profile,account]);
+  }
+
+  void updateUnit(String email,int unit) async{
+    final Database db = await database;
+    db.rawUpdate('''
+    UPDATE accounts 
+    SET unit = ? 
+    WHERE email = ?
+    ''',
+        [unit,email]);
   }
 
 }
