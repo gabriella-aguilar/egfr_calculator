@@ -26,7 +26,7 @@ dependencies:
   path_provider: ^1.6.24
   provider: ^3.0.0
   fl_chart: ^0.12.0
-  syncfusion_flutter_charts:
+  url_launcher: "^3.0.1"
   flutter:
     sdk: flutter
 

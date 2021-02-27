@@ -111,7 +111,8 @@ class _SignUpPageState extends State<SignUpPage> {
     else{
       Account account = new Account(
           email: _emailController,
-          password: _passwordController
+          password: _passwordController,
+          unit: 1
       );
 
       DataAccess.instance.insertAccount(account);

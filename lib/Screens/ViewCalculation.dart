@@ -21,24 +21,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
   void initState() {
     _calculation = Provider.of<ContextInfo>(context, listen: false).getCurrentCalculation();
     double egfr = _calculation.getEgfr();
-    if(egfr >= 90){
-      _stage = "1";
-    }
-    else if(egfr < 90 && egfr >= 60){
-      _stage = "2";
-    }
-    else if(egfr < 60 && egfr >= 45){
-      _stage = "3A";
-    }
-    else if(egfr < 45 && egfr >= 30){
-      _stage = "3B";
-    }
-    else if(egfr < 30 && egfr >= 15){
-      _stage = "4";
-    }
-    else{
-      _stage = "5";
-    }
+    _stage = getStage(egfr);
     super.initState();
   }
 

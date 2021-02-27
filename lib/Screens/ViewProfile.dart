@@ -1,14 +1,16 @@
 import 'package:egfr_calculator/Classes/CalculationClass.dart';
 import 'package:egfr_calculator/Classes/ProfileClass.dart';
+import 'package:egfr_calculator/Components/CalcTable.dart';
 import 'package:egfr_calculator/DataAccess.dart';
 import 'package:egfr_calculator/Screens/NewCalculationScreen.dart';
 import 'package:egfr_calculator/Screens/PreEditDataPage.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:egfr_calculator/Context.dart';
 import 'package:egfr_calculator/Colors.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+
 
 class ViewProfilePage extends StatefulWidget {
   @override
@@ -18,6 +20,7 @@ class ViewProfilePage extends StatefulWidget {
 class _ViewProfilePageState extends State<ViewProfilePage> {
   Profile _profile;
   List<Calculation> _calculations;
+  String _emailText = 'Export';
 
   List<Color> gradientColors = [
     const Color(0xff23b6e6),
@@ -30,6 +33,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     _calculations = new List<Calculation>();
     _profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
     _getCalculations();
+
   }
 
   @override
@@ -65,7 +69,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
            _calcGraph(),
           SizedBox(height: 5,),
           // _getSplineChart(),
-          _getCalcListCard(),
+          //_getCalcListCard(),
+          _getCalcTableCard(),
           SizedBox(height: 5,),
           ElevatedButton(
             onPressed: () {
@@ -98,6 +103,17 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             ),
             style: elevatedButtonStyle,
           ),
+          ElevatedButton(
+            onPressed: () {
+              _createTextString();
+
+              print(_emailText);
+            },
+            child: Row(
+              children: [Icon(Icons.share), Text("Export")],
+            ),
+            style: elevatedButtonStyle,
+          ),
         ],
       ),
     );
@@ -105,9 +121,17 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
 
   Widget _calcGraph() {
     List<FlSpot> spots = new List<FlSpot>();
+    Map<double,int> titles = new Map();
+    _calculations.sort((a, b) => a.getDate().compareTo(b.getDate()));
+    DateTime startX = null;
     _calculations.forEach((element) {
       DateTime date = DateTime.parse(element.getDate());
-      double x = date.month + (date.day /30);
+      if(startX == null){
+          startX = date;
+      }
+      Duration dif = date.difference(startX);
+      double x = dif.inDays / 30;
+      titles[x] = date.month;
       double egfr = element.getEgfr();
       spots.add(FlSpot(x,egfr));
     });
@@ -153,15 +177,34 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     getTextStyles: (value) =>
                     const TextStyle(color: Color(0xff68737d), fontWeight: FontWeight.bold, fontSize: 16),
                     getTitles: (value) {
-                      switch (value.toInt()) {
+                      switch(titles[value]){
+                        case 1:
+                          return "J";
                         case 2:
-                          return 'MAR';
+                          return "F";
+                        case 3:
+                          return "M";
+                        case 4:
+                          return "A";
                         case 5:
-                          return 'JUN';
+                          return "M";
+                        case 6:
+                          return "J";
+                        case 7:
+                          return "J";
                         case 8:
-                          return 'SEP';
+                          return "A";
+                        case 9:
+                          return "S";
+                        case 10:
+                          return "O";
+                        case 11:
+                          return "N";
+                        case 12:
+                          return "D";
+                        default:
+                          return '';
                       }
-                      return '';
                     },
                     margin: 8,
                   ),
@@ -174,12 +217,16 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     ),
                     getTitles: (value) {
                       switch (value.toInt()) {
-                        case 1:
-                          return '10k';
-                        case 3:
-                          return '30k';
-                        case 5:
-                          return '50k';
+                        case 125:
+                          return '125';
+                        case 100:
+                          return '100';
+                        case 50:
+                          return '50';
+                        case 75:
+                          return '75';
+                        case 25:
+                          return '25';
                       }
                       return '';
                     },
@@ -190,9 +237,9 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                 borderData:
                 FlBorderData(show: true, border: Border.all(color: const Color(0xff37434d), width: 1)),
                 minX: 0,
-                maxX: 11,
+                maxX: 12,
                 minY: 0,
-                maxY: 120,
+                maxY: 125,
                 lineBarsData: [
                   LineChartBarData(
                     spots:spots,
@@ -232,38 +279,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       spots.add(FlSpot(x,element.getEgfr()));
     });
     return spots;
-    //   [
-    //   FlSpot(0, 3),
-    //   FlSpot(2.6, 2),
-    //   FlSpot(4.9, 5),
-    //   FlSpot(6.8, 3.1),
-    //   FlSpot(8, 4),
-    //   FlSpot(9.5, 3),
-    //   FlSpot(11, 4),
-    // ];
   }
 
-  Widget _getSplineChart(){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: darkBlueAccent),
-        borderRadius: BorderRadius.all(Radius.circular(10.0) //
-        ),
-      ),
-      child: SfCartesianChart(
-          series: <ChartSeries>[
-            // Renders spline chart
-            SplineSeries<Calculation, double>(
-                dataSource: _calculations,
-                xValueMapper: (Calculation calc, _) => DateTime.parse(calc.getDate()).month.toDouble(),
-                yValueMapper: (Calculation calc, _) => calc.getEgfr()
-            )
-          ]
-      ),
-    );
-  }
 
   _getCalculations() async {
     List<Calculation> c = await DataAccess.instance
@@ -319,5 +336,50 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       );
     }
     return Container(height: 0,);
+  }
+
+  Widget _getCalcTableCard(){
+    return Container(
+      //padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: darkBlueAccent),
+          borderRadius: BorderRadius.all(Radius.circular(10.0) //
+          ),
+        ),
+        child: CalcTable()
+
+    );
+  }
+
+
+ _createTextString() {
+    String t = '';
+    if(_calculations == null || _calculations.isEmpty){
+      print('calc empty');
+    }
+    _calculations.forEach((element) {
+      DateTime date = DateTime.parse(element.getDate());
+      t = t + dateFormat(date) + " Stage " + getStage(element.getEgfr()) + " " + element.getEgfr().toStringAsFixed(3)+"\n";
+    });
+
+    setState(() {
+      _emailText = t;
+    });
+    _shareText();
+  }
+
+  _shareText() async {
+    String toMailId = '';
+    String subject = 'EGFR Export';
+    String body = _emailText;
+    _createTextString();
+    var url = 'mailto:$toMailId?subject=$subject&body=$body';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+
   }
 }

@@ -1,3 +1,5 @@
+import 'package:egfr_calculator/Screens/EditProfile.dart';
+import 'package:egfr_calculator/Screens/SettingsScreen.dart';
 import 'package:egfr_calculator/Screens/ViewProfile.dart';
 import 'package:provider/provider.dart';
 import 'package:egfr_calculator/Context.dart';
@@ -27,6 +29,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> reg = [
+      IconButton(icon: Icon(Icons.settings,color: Colors.white,), onPressed: (){
+        Navigator.push(
+          context,
+          PageRouteBuilder(pageBuilder: (_, __, ___) => SettingsScreen()),
+        );
+      }),
       IconButton(icon: Icon(Icons.edit,color: Colors.white,), onPressed: (){
         setState(() {
           mode = false;
@@ -57,7 +65,7 @@ class _HomePageState extends State<HomePage> {
         actions:mode ? reg : editting
       ),
       body: ListView(
-
+        //padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: _getProfiles(),
       ),
     );
@@ -81,43 +89,78 @@ class _HomePageState extends State<HomePage> {
     List<Widget> wids = new List<Widget>();
     if(profiles != null && profiles.isNotEmpty){
       profiles.forEach((element) {
-        wids.add(Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-          decoration: BoxDecoration(
-            color: backBlue,
-            border: Border(
-              bottom: BorderSide(width: 1.0, color: darkBlueAccent),
+        wids.add(GestureDetector(
+          onTap:(){
+            if(mode){
+            Provider.of<ContextInfo>(context, listen: false).setCurrentProfile(element);
+            Navigator.push(
+              context,
+              PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
+            );}
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
+            decoration: BoxDecoration(
+              color: backBlue,
+              border: Border(
+                bottom: BorderSide(width: 1.0, color: darkBlueAccent),
+              ),
             ),
-          ),
-          child: ListTile(
-            title: Text(element.getName(),style: basicText,),
-            trailing: mode ? null : Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(icon: Icon(Icons.edit,color: newBlue,), onPressed: (){
+                Text(element.getName(),style: basicText,),
+                Opacity(
+                  opacity: mode ? 0.0 : 1.0,
+                  child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        icon: Icon(Icons.edit,color: newBlue,),
+                        onPressed: (){
+                          if(!mode) {
+                            Provider.of<ContextInfo>(context, listen: false)
+                                .setCurrentProfile(element);
+                            _updateProf();
+                          }
+                        },
 
-                }),
-                IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
-                  _deleteProf(element.getName());
-                }),
+                    ),
+                    IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
+                      if(!mode) {
+                        _deleteProf(element.getName());
+                      }
+                    }),
+                  ],
+              ),
+                ),
               ],
-            ),
-            onTap: (){
-              if(mode){
-              Provider.of<ContextInfo>(context, listen: false).setCurrentProfile(element);
-              Navigator.push(
-                context,
-                PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
-              );}
-            },
+            )
           ),
         ));
       });
     }
     else{
-      wids.add(Text("No Profiles"));
+      wids.add(Container(
+        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("No Profiles",style: basicText,)
+          ],
+        ),
+      ));
     }
     return wids;
+  }
+
+  _updateProf(){
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      PageRouteBuilder(pageBuilder: (_, __, ___) => EditProfileScreen()),
+    );
   }
 
   _deleteProf(String name) async{

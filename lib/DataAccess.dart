@@ -37,7 +37,7 @@ class DataAccess{
 
   Future _create(Database db, int version) async {
 
-    db.execute("CREATE TABLE accounts(email TEXT PRIMARY KEY, password TEXT)");
+    db.execute("CREATE TABLE accounts(email TEXT PRIMARY KEY, password TEXT, unit INT)");
     db.execute("CREATE TABLE profiles(name TEXT, dob TEXT, gender INT, ethnicity INT, account TEXT, PRIMARY KEY(name,account))");
     db.execute("CREATE TABLE calculations(date TEXT, egfr REAL, account TEXT, profile TEXT)");
 
@@ -106,7 +106,6 @@ class DataAccess{
 
   Future<Account> getSpecificAccount(String name) async {
     final Database db = await database;
-
     final List<Map<String, dynamic>> maps = await db.query("accounts",where: "email = ?",whereArgs: [name]);
     List<Account> list =  List.generate(maps.length, (i) {
       return Account(
@@ -130,6 +129,21 @@ class DataAccess{
   void deleteProfile(String profile,String account) async{
     final Database db = await database;
     db.delete('profiles',where: "name = ? AND account = ?" ,whereArgs: [profile,account]);
+    db.delete('calculations',where: "profile = ? AND account = ?" ,whereArgs: [profile,account]);
+  }
+
+  void updateUnit(Account account) async{
+    final Database db = await database;
+    String email = account.getEmail();
+    Map<String,dynamic> row = account.toMap();
+
+    await db.update('accounts', row, where: "email = ?", whereArgs: [email]);
+  }
+
+  void updateProfile(String name, String account, Profile newProfile) async{
+    final Database db = await database;
+    Map<String,dynamic> row = newProfile.toMap();
+    await db.update('profiles', row, where: "name = ? AND account = ?",whereArgs: [name,account]);
   }
 
 }
