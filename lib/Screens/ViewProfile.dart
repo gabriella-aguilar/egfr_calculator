@@ -33,7 +33,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     _calculations = new List<Calculation>();
     _profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
     _getCalculations();
-    //_createTextString();
+
   }
 
   @override
@@ -105,14 +105,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
           ),
           ElevatedButton(
             onPressed: () {
-              // Navigator.pop(context);
-              // Navigator.push(
-              //   context,
-              //   PageRouteBuilder(
-              //       pageBuilder: (_, __, ___) => ExportPage()),
-              // );
+              _createTextString();
 
-              _shareText();
               print(_emailText);
             },
             child: Row(
@@ -285,15 +279,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       spots.add(FlSpot(x,element.getEgfr()));
     });
     return spots;
-    //   [
-    //   FlSpot(0, 3),
-    //   FlSpot(2.6, 2),
-    //   FlSpot(4.9, 5),
-    //   FlSpot(6.8, 3.1),
-    //   FlSpot(8, 4),
-    //   FlSpot(9.5, 3),
-    //   FlSpot(11, 4),
-    // ];
   }
 
 
@@ -379,10 +364,9 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     });
 
     setState(() {
-      print('in set state for create text');
-      print('t '+t);
       _emailText = t;
     });
+    _shareText();
   }
 
   _shareText() async {

@@ -136,7 +136,7 @@ class DataAccess{
     final Database db = await database;
     String email = account.getEmail();
     Map<String,dynamic> row = account.toMap();
-    
+
     await db.update('accounts', row, where: "email = ?", whereArgs: [email]);
   }
 
