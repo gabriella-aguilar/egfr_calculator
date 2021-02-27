@@ -88,35 +88,65 @@ class _HomePageState extends State<HomePage> {
     List<Widget> wids = new List<Widget>();
     if(profiles != null && profiles.isNotEmpty){
       profiles.forEach((element) {
-        wids.add(Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-          decoration: BoxDecoration(
-            color: backBlue,
-            border: Border(
-              bottom: BorderSide(width: 1.0, color: darkBlueAccent),
+        wids.add(GestureDetector(
+          onTap:(){
+            if(mode){
+            Provider.of<ContextInfo>(context, listen: false).setCurrentProfile(element);
+            Navigator.push(
+              context,
+              PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
+            );}
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 15),
+            decoration: BoxDecoration(
+              color: backBlue,
+              border: Border(
+                bottom: BorderSide(width: 1.0, color: darkBlueAccent),
+              ),
             ),
-          ),
-          child: ListTile(
-            title: Text(element.getName(),style: basicText,),
-            trailing: mode ? null : Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(icon: Icon(Icons.edit,color: newBlue,), onPressed: (){
+                Text(element.getName(),style: basicText,),
+                Opacity(
+                  opacity: mode ? 0.0 : 1.0,
+                  child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(icon: Icon(Icons.edit,color: newBlue,), onPressed: (){
 
-                }),
-                IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
-                  _deleteProf(element.getName());
-                }),
+                    }),
+                    IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
+                      _deleteProf(element.getName());
+                    }),
+                  ],
+              ),
+                ),
               ],
-            ),
-            onTap: (){
-              if(mode){
-              Provider.of<ContextInfo>(context, listen: false).setCurrentProfile(element);
-              Navigator.push(
-                context,
-                PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
-              );}
-            },
+            )
+            // ListTile(
+            //   title: Text(element.getName(),style: basicText,),
+            //   trailing: mode ? null : Row(
+            //     mainAxisAlignment: MainAxisAlignment.end,
+            //     children: [
+            //       IconButton(icon: Icon(Icons.edit,color: newBlue,), onPressed: (){
+            //
+            //       }),
+            //       IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
+            //         _deleteProf(element.getName());
+            //       }),
+            //     ],
+            //   ),
+            //   onTap: (){
+            //     if(mode){
+            //     Provider.of<ContextInfo>(context, listen: false).setCurrentProfile(element);
+            //     Navigator.push(
+            //       context,
+            //       PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
+            //     );}
+            //   },
+            // ),
           ),
         ));
       });
