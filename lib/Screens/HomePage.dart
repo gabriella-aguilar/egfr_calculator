@@ -1,3 +1,4 @@
+import 'package:egfr_calculator/Screens/EditProfile.dart';
 import 'package:egfr_calculator/Screens/SettingsScreen.dart';
 import 'package:egfr_calculator/Screens/ViewProfile.dart';
 import 'package:provider/provider.dart';
@@ -114,39 +115,27 @@ class _HomePageState extends State<HomePage> {
                   child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(icon: Icon(Icons.edit,color: newBlue,), onPressed: (){
+                    IconButton(
+                        icon: Icon(Icons.edit,color: newBlue,),
+                        onPressed: (){
+                          if(!mode) {
+                            Provider.of<ContextInfo>(context, listen: false)
+                                .setCurrentProfile(element);
+                            _updateProf();
+                          }
+                        },
 
-                    }),
+                    ),
                     IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
-                      _deleteProf(element.getName());
+                      if(!mode) {
+                        _deleteProf(element.getName());
+                      }
                     }),
                   ],
               ),
                 ),
               ],
             )
-            // ListTile(
-            //   title: Text(element.getName(),style: basicText,),
-            //   trailing: mode ? null : Row(
-            //     mainAxisAlignment: MainAxisAlignment.end,
-            //     children: [
-            //       IconButton(icon: Icon(Icons.edit,color: newBlue,), onPressed: (){
-            //
-            //       }),
-            //       IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
-            //         _deleteProf(element.getName());
-            //       }),
-            //     ],
-            //   ),
-            //   onTap: (){
-            //     if(mode){
-            //     Provider.of<ContextInfo>(context, listen: false).setCurrentProfile(element);
-            //     Navigator.push(
-            //       context,
-            //       PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
-            //     );}
-            //   },
-            // ),
           ),
         ));
       });
@@ -164,6 +153,14 @@ class _HomePageState extends State<HomePage> {
       ));
     }
     return wids;
+  }
+
+  _updateProf(){
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      PageRouteBuilder(pageBuilder: (_, __, ___) => EditProfileScreen()),
+    );
   }
 
   _deleteProf(String name) async{

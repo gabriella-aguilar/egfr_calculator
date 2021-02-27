@@ -121,11 +121,6 @@ class DataAccess{
     }
   }
 
-  Future<Map<String,dynamic>> _getAccountRaw(String email) async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query("accounts",where: "email = ?",whereArgs: [email]);
-    return maps[0];
-  }
   void deleteCalculation(String date,String profile,String account) async{
     final Database db = await database;
     db.delete('calculations',where: "date = ? AND profile = ? AND account = ?" ,whereArgs: [date,profile,account]);
@@ -134,16 +129,21 @@ class DataAccess{
   void deleteProfile(String profile,String account) async{
     final Database db = await database;
     db.delete('profiles',where: "name = ? AND account = ?" ,whereArgs: [profile,account]);
+    db.delete('calculations',where: "profile = ? AND account = ?" ,whereArgs: [profile,account]);
   }
 
-  void updateUnit(String email,int unit) async{
+  void updateUnit(Account account) async{
     final Database db = await database;
-    db.rawUpdate('''
-    UPDATE accounts 
-    SET unit = ? 
-    WHERE email = ?
-    ''',
-        [unit,email]);
+    String email = account.getEmail();
+    Map<String,dynamic> row = account.toMap();
+    
+    await db.update('accounts', row, where: "email = ?", whereArgs: [email]);
+  }
+
+  void updateProfile(String name, String account, Profile newProfile) async{
+    final Database db = await database;
+    Map<String,dynamic> row = newProfile.toMap();
+    await db.update('profiles', row, where: "name = ? AND account = ?",whereArgs: [name,account]);
   }
 
 }

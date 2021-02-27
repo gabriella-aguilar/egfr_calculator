@@ -97,10 +97,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if(!_unit){
       u = 2;
     }
-    print("u:"+_account.getUnit().toString());
-    DataAccess.instance.updateUnit(_account.getEmail(), u);
-    Account a = await DataAccess.instance.getSpecificAccount(_account.getEmail());
-    Provider.of<ContextInfo>(context,listen: false).setCurrentAccount(a);
-    print("u: "+a.getUnit().toString());
+
+    Account account = new Account(
+        email: _account.getEmail(),
+        password: _account.getPassword(),
+        unit: u
+    );
+
+    DataAccess.instance.updateUnit(account);
+
+    Provider.of<ContextInfo>(context,listen: false).setCurrentAccount(account);
+
   }
 }
