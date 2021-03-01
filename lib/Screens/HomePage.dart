@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     List<Widget> reg = [
       IconButton(icon: Icon(Icons.settings,color: Colors.white,), onPressed: (){
+        Navigator.pop(context);
         Navigator.push(
           context,
           PageRouteBuilder(pageBuilder: (_, __, ___) => SettingsScreen()),

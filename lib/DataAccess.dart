@@ -121,6 +121,26 @@ class DataAccess{
     }
   }
 
+  Future<Profile> getSpecificProfile(String account, String name) async{
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query("profiles",where: "account = ? AND name = ?",whereArgs: [account,name]);
+    List<Profile> list = List.generate(maps.length, (i) {
+      return Profile(
+          name: maps[i]['name'],
+          dob: maps[i]['dob'],
+          gender: maps[i]['gender'],
+          ethnicity: maps[i]['ethnicity'],
+          account: maps[i]['account']
+      );
+    });
+    if(list != null && list.isNotEmpty){
+      return list[0];
+    }
+    else{
+      return null;
+    }
+  }
+
   void deleteCalculation(String date,String profile,String account) async{
     final Database db = await database;
     db.delete('calculations',where: "date = ? AND profile = ? AND account = ?" ,whereArgs: [date,profile,account]);
@@ -141,9 +161,47 @@ class DataAccess{
   }
 
   void updateProfile(String name, String account, Profile newProfile) async{
+    String newName = newProfile.getName();
     final Database db = await database;
     Map<String,dynamic> row = newProfile.toMap();
     await db.update('profiles', row, where: "name = ? AND account = ?",whereArgs: [name,account]);
+
+    if(name != newName){
+      updateCalc(account, name, newName);
+    }
+  }
+
+  void updateCalc(String email, String oldName, String newName) async{
+    List<Calculation> calcs = await getCalculations(email, oldName);
+    List<Calculation> newCalcs = List();
+    calcs.forEach((element) {
+      newCalcs.add(new Calculation(
+        date: element.getDate(),
+        egfr: element.getEgfr(),
+        account: element.getAccount(),
+        profile: newName
+      ));
+      deleteCalculation(element.getDate(), oldName, element.getAccount());
+    });
+
+    newCalcs.forEach((element) {
+      insertCalculation(element);
+    });
+
+  }
+
+  bool accountExists(String email){
+    if(getSpecificAccount(email) != null){
+      return true;
+    }
+    return false;
+  }
+
+  bool profileExists(String name, String email){
+    if(getSpecificProfile(email, name) != null){
+      return true;
+    }
+    return false;
   }
 
 }

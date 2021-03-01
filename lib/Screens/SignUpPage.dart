@@ -43,6 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
            SizedBox(height: 5,),
            TextField(
              decoration: inputDecoration,
+             autocorrect: false,
              onChanged: (value){
                _emailController = value;
              },
@@ -52,6 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
            SizedBox(height: 5,),
            TextField(
              decoration: inputDecoration,
+             autocorrect: false,
              onChanged: (value){
                _confirmEmailController = value;
              },
@@ -60,6 +62,8 @@ class _SignUpPageState extends State<SignUpPage> {
            Text("Password",style: basicText),
            SizedBox(height: 5,),
            TextField(
+             obscureText: true,
+             autocorrect: false,
              decoration: inputDecoration,
              onChanged: (value){
                _passwordController = value;
@@ -69,6 +73,8 @@ class _SignUpPageState extends State<SignUpPage> {
            Text("Confirm Password",style: basicText),
            SizedBox(height: 5,),
            TextField(
+             obscureText: true,
+             autocorrect: false,
              decoration: inputDecoration,
              onChanged: (value){
                _confirmPasswordController = value;
@@ -93,22 +99,7 @@ class _SignUpPageState extends State<SignUpPage> {
       FocusScope.of(context).unfocus();
     }
 
-    if(_emailController == "" || _passwordController == "" || _confirmEmailController == "" || _confirmPasswordController == ""){
-      setState(() {
-        _error = "Fields cannot be left blank";
-      });
-    }
-    else if(_emailController != _confirmEmailController){
-      setState(() {
-        _error = "Emails don't match";
-      });
-    }
-    else if(_passwordController != _confirmPasswordController){
-      setState(() {
-        _error = "Passwords don't match";
-      });
-    }
-    else{
+    if(_errorChecking()){
       Account account = new Account(
           email: _emailController,
           password: _passwordController,
@@ -125,6 +116,42 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
 
+
+  }
+
+  bool _errorChecking(){ //true is all good
+    if(_emailController == "" || _passwordController == "" || _confirmEmailController == "" || _confirmPasswordController == ""){
+      setState(() {
+        _error = "Fields cannot be left blank";
+      });
+      return false;
+    }
+    else if(!_emailController.contains("@") || !_emailController.substring(_emailController.indexOf("@")).contains(".")){
+      setState(() {
+        _error = "Please enter a valid email";
+      });
+      return false;
+    }
+    else if(_emailController != _confirmEmailController){
+      setState(() {
+        _error = "Emails don't match";
+      });
+      return false;
+    }
+    else if(_passwordController != _confirmPasswordController){
+      setState(() {
+        _error = "Passwords don't match";
+      });
+      return false;
+    }
+    else if(DataAccess.instance.accountExists(_emailController)){
+      setState(() {
+        _error = "An account with this email already exists";
+      });
+      return false;
+    }
+
+    return true;
 
   }
 

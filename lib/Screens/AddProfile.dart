@@ -36,6 +36,23 @@ class _AddProfilePageState extends State<AddProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: backBlue,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(pageBuilder: (_, __, ___) => HomePage()),
+                );
+              },
+            );
+          },
+        ),
         title: Text(
           "Add a Profile",
           style: appBarStyle,
@@ -173,15 +190,24 @@ class _AddProfilePageState extends State<AddProfilePage> {
 
 
   _submit(){
-    if(_nameController != "" && _dob != dateFormat(DateTime.now())){
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    if (_nameController == "" || _dob == dateFormat(DateTime.now())){
+      setState(() {
+      _error = "Fields cannot be left blank";
+      });
+    }
+    else if(DataAccess.instance.profileExists(_nameController, email)){
+      setState(() {
+        _error = "A Profile with this name already exists.";
+      });
+    }
+    else{
       Profile profile = new Profile(
           name: _nameController,
           dob: _date.toString(),
           ethnicity: (_ethnicity ? 1 : 0),
           gender: (_gender ? 1 : 0),
-          account: Provider.of<ContextInfo>(context, listen: false)
-              .getCurrentAccount()
-              .getEmail());
+          account: email);
       DataAccess.instance.insertProfile(profile);
       Navigator.pop(context);
       Navigator.push(
@@ -189,10 +215,6 @@ class _AddProfilePageState extends State<AddProfilePage> {
         PageRouteBuilder(pageBuilder: (_, __, ___) => HomePage()),
       );
     }
-    else{
-      setState(() {
-        _error = "Fields cannot be left blank";
-      });
-    }
+
   }
 }

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:egfr_calculator/DataAccess.dart';
 import '../Colors.dart';
 import '../Context.dart';
+import 'HomePage.dart';
 
 class SettingsScreen extends StatefulWidget{
   @override
@@ -34,6 +35,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: newBlue,
         title: Text("Settings",style: appBarStyle,),
         centerTitle: true,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: backBlue,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(pageBuilder: (_, __, ___) => HomePage()),
+                );
+              },
+            );
+          },
+        ),
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
