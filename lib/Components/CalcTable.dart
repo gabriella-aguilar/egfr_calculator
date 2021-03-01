@@ -13,10 +13,10 @@ class CalcTable extends StatefulWidget{
 
 class _CalcTableState extends State<CalcTable> {
   List<Calculation> _calculations;
-
+  Profile profile;
   @override
   void initState() {
-    Profile profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
+    profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
     _getCalculations(profile);
     super.initState();
   }
@@ -35,13 +35,21 @@ class _CalcTableState extends State<CalcTable> {
       List<DataRow> rows = new List();
       _calculations.forEach((element) {
         DateTime date = DateTime.parse(element.getDate());
+
         rows.add(DataRow(cells: [
           DataCell(Text(dateFormat(date))),
           DataCell(Text(element.getEgfr().toStringAsFixed(3))),
-          DataCell(Text(getStage(element.getEgfr())))
+          DataCell(Text(getStage(element.getEgfr()))),
+          DataCell(IconButton(icon: Icon(Icons.delete),
+            onPressed: (){
+              DataAccess.instance.deleteCalculation(element.getDate(), element.getProfile(), element.getAccount());
+              _getCalculations(profile);
+            },))
         ]));
       });
-      return DataTable(columns: [
+      return DataTable(
+        columnSpacing: 4,
+          columns: [
         DataColumn(
           label: Text(
             'Date',
@@ -57,6 +65,12 @@ class _CalcTableState extends State<CalcTable> {
         DataColumn(
           label: Text(
             'Stage',
+            style: TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            '',
             style: TextStyle(fontStyle: FontStyle.italic),
           ),
         ),
