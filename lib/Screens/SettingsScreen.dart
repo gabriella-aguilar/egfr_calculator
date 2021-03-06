@@ -12,7 +12,7 @@ class SettingsScreen extends StatefulWidget{
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
+  int _fontShift = 0;
   bool _unit;
   Account _account;
 
@@ -25,7 +25,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     else{
       _unit = false;
     }
+    setStyles();
     super.initState();
+  }
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+    });
   }
 
   @override
@@ -33,7 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: newBlue,
-        title: Text("Settings",style: appBarStyle,),
+        title: Text("Settings",style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),),
         centerTitle: true,
         leading: Builder(
           builder: (BuildContext context) {
@@ -71,7 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           : Icons.radio_button_unchecked)),
                       Text(
                         "mmol/L",
-                        style: basicText,
+                        style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
                       )
                     ],
                   )),
@@ -92,18 +101,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           : Icons.radio_button_checked)),
                       Text(
                         "mg/dl",
-                        style: basicText,
+                        style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
                       )
                     ],
                   )),
 
             ],
           ),
+          SizedBox(
+            height: 5,
+          ),
+          Text("Font Size:",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+          Slider(
+            value: _fontShift.toDouble(),
+            activeColor: darkBlueAccent,
+            inactiveColor: newBlue,
+            min: 0,
+            max: 15,
+            divisions: 5,
+            onChanged: (double value) {
+              setState(() {
+                _fontShift = value.round();
+              });
+            },
+          ),
           ElevatedButton(
               onPressed: (){
                 _update();
               },
-              child: Text("Save",style: basicText,)
+              child: Text("Save",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),)
           )
         ],
       ),
@@ -123,7 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     DataAccess.instance.updateUnit(account);
-
+    DataAccess.instance.updateFontSize(account.getEmail(), _fontShift);
     Provider.of<ContextInfo>(context,listen: false).setCurrentAccount(account);
 
   }

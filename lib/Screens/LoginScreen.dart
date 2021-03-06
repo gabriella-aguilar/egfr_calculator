@@ -19,10 +19,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    super.initState();
-
     _error = "";
+    super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: (){
                           _login();
                         },
-                        child: Text("Go!")
+                        child: Text("Go!",style: basicText,)
                     )],
                   )
                 ],

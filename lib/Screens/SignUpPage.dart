@@ -98,8 +98,14 @@ class _SignUpPageState extends State<SignUpPage> {
     if(MediaQuery.of(context).viewInsets.bottom != 0){
       FocusScope.of(context).unfocus();
     }
+    bool exists = await DataAccess.instance.accountExists(_emailController);
 
-    if(_errorChecking()){
+    if(exists){
+      setState(() {
+        _error = "An account with this email already exists";
+      });
+    }
+    else if(_errorChecking()){
       Account account = new Account(
           email: _emailController,
           password: _passwordController,
@@ -141,12 +147,6 @@ class _SignUpPageState extends State<SignUpPage> {
     else if(_passwordController != _confirmPasswordController){
       setState(() {
         _error = "Passwords don't match";
-      });
-      return false;
-    }
-    else if(DataAccess.instance.accountExists(_emailController)){
-      setState(() {
-        _error = "An account with this email already exists";
       });
       return false;
     }

@@ -18,30 +18,39 @@ class _HomePageState extends State<HomePage> {
 
   bool mode; //true -> normal false-> editting
   List<Profile> profiles;
+  int _fontShift = 0;
 
   @override
   void initState() {
     mode = true;
-    super.initState();
+    setStyles();
     _setUp();
+    super.initState();
   }
 
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     List<Widget> reg = [
-      IconButton(icon: Icon(Icons.settings,color: Colors.white,), onPressed: (){
+      IconButton(icon: Icon(Icons.settings,color: Colors.white,size: 24 + _fontShift.toDouble(),), onPressed: (){
         Navigator.pop(context);
         Navigator.push(
           context,
           PageRouteBuilder(pageBuilder: (_, __, ___) => SettingsScreen()),
         );
       }),
-      IconButton(icon: Icon(Icons.edit,color: Colors.white,), onPressed: (){
+      IconButton(icon: Icon(Icons.edit,color: Colors.white,size: 24 + _fontShift.toDouble(),), onPressed: (){
         setState(() {
           mode = false;
         });
       }),
-      IconButton(icon: Icon(Icons.add_circle,color: Colors.white,), onPressed: (){
+      IconButton(icon: Icon(Icons.add_circle,color: Colors.white,size: 24 + _fontShift.toDouble(),), onPressed: (){
       Navigator.pop(context);
       Navigator.push(
         context,
@@ -51,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     ];
 
     List<Widget> editting = [
-      IconButton(icon: Icon(Icons.done,color: Colors.white,), onPressed: (){
+      IconButton(icon: Icon(Icons.done,color: Colors.white,size: 24 + _fontShift.toDouble(),), onPressed: (){
         setState(() {
           mode = true;
         });
@@ -61,7 +70,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: newBlue,
-        title: Text("Profiles",style: appBarStyle,),
+        title: Text("Profiles",style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),),
         centerTitle: true,
         actions:mode ? reg : editting
       ),
@@ -110,7 +119,7 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(element.getName(),style: basicText,),
+                Text(element.getName(),style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
                 Opacity(
                   opacity: mode ? 0.0 : 1.0,
                   child: Row(
@@ -148,7 +157,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("No Profiles",style: basicText,)
+            Text("No Profiles",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),)
           ],
         ),
       ));

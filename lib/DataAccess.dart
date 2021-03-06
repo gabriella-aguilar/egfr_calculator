@@ -39,8 +39,8 @@ class DataAccess{
 
     db.execute("CREATE TABLE accounts(email TEXT PRIMARY KEY, password TEXT, unit INT)");
     db.execute("CREATE TABLE profiles(name TEXT, dob TEXT, gender INT, ethnicity INT, account TEXT, PRIMARY KEY(name,account))");
-    db.execute("CREATE TABLE calculations(date TEXT, egfr REAL, account TEXT, profile TEXT)");
-
+    db.execute("CREATE TABLE calculations(date TEXT, egfr REAL, account TEXT, profile TEXT, PRIMARY KEY(date,profile,account))");
+    db.execute("CREATE TABLE styles(name TEXT, num INT, account TEXT, PRIMARY KEY(name,account))");
   }
 
   Future<void> insertCalculation(Calculation calculation) async {
@@ -63,6 +63,21 @@ class DataAccess{
     ).catchError((error) {
       print("Something went wrong: ${error.message}");
     });
+    db.rawInsert("INSERT INTO styles (name,num,account) VALUES ('fontShift',0,?);",[account.getEmail()]);
+    db.rawInsert("INSERT INTO styles (name,num,account) VALUES ('palette',0,?);",[account.getEmail()]);
+  }
+
+
+  void updateFontSize(String account,int fontSize) async{
+    final Database db = await database;
+    Map<String,dynamic> row = {'name':'fontShift','num':fontSize,'account':account};
+    await db.update('styles', row, where: "name = 'fontShift' AND account = ?",whereArgs: [account]);
+  }
+
+  Future<int> getFontSize(String account) async {
+    final Database db =await database;
+    final List<Map<String, dynamic>> maps = await db.query('styles',where: "name = 'fontShift' AND account = ?",whereArgs: [account]);
+    return maps[0]['num'];
   }
 
   Future<void> insertProfile(Profile profile) async {
@@ -87,6 +102,18 @@ class DataAccess{
           gender: maps[i]['gender'],
           ethnicity: maps[i]['ethnicity'],
           account: maps[i]['account']
+      );
+    });
+  }
+
+  Future<List<Account>> getAllAccounts() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('accounts');
+    return List.generate(maps.length, (i) {
+      return Account(
+          email: maps[i]['email'],
+          password: maps[i]['password'],
+          unit: maps[i]['unit'],
       );
     });
   }
@@ -190,18 +217,26 @@ class DataAccess{
 
   }
 
-  bool accountExists(String email){
-    if(getSpecificAccount(email) != null){
-      return true;
-    }
-    return false;
+  Future<bool> accountExists(String email) async{
+    List<Account> accounts = await getAllAccounts();
+    List<String> emails = List();
+    accounts.forEach((element) {
+      emails.add(element.getEmail());
+    });
+
+    return emails.contains(email);
   }
 
-  bool profileExists(String name, String email){
-    if(getSpecificProfile(email, name) != null){
-      return true;
-    }
-    return false;
+
+
+  Future<bool> profileExists(String name, String email) async{
+    List<Profile> profiles = await getAllProfiles(email);
+    List<String> names = List();
+    profiles.forEach((element) {
+      names.add(element.getName());
+    });
+
+    return names.contains(email);
   }
 
 }

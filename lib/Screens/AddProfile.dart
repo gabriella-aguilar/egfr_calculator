@@ -21,15 +21,26 @@ class _AddProfilePageState extends State<AddProfilePage> {
   bool _gender; //true -> female false->male
   bool _ethnicity;
   String _error;
+  int _fontShift = 0;
 
   @override
   void initState() {
-    super.initState();
+    setStyles();
     _dob = dateFormat(DateTime.now());
     _nameController = "";
     _gender = true;
     _ethnicity = false;
     _error = "";
+    super.initState();
+
+  }
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+    });
   }
 
   @override
@@ -41,7 +52,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
             return IconButton(
               icon: const Icon(
                 Icons.arrow_back,
-                color: backBlue,
+                color: backBlue
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -55,7 +66,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
         ),
         title: Text(
           "Add a Profile",
-          style: appBarStyle,
+          style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),
         ),
         backgroundColor: newBlue,
         centerTitle: true,
@@ -63,10 +74,10 @@ class _AddProfilePageState extends State<AddProfilePage> {
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: [
-          Text(_error,style: errorTextStyle,),
+          Text(_error,style: errorTextStyle.copyWith(fontSize: 18+ _fontShift.toDouble()),),
           Text(
             "Name",
-            style: basicText,
+            style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
           ),
           SizedBox(
             height: 5,
@@ -95,7 +106,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                           : Icons.radio_button_unchecked)),
                       Text(
                         "Female",
-                        style: basicText,
+                        style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
                       )
                     ],
                   )),
@@ -116,7 +127,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                           : Icons.radio_button_checked)),
                       Text(
                         "Male",
-                        style: basicText,
+                        style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
                       )
                     ],
                   )),
@@ -129,7 +140,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
           Row(
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Black Ethnicity',style: basicText,),
+              Text('Black Ethnicity',style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
               Checkbox(
                 value: _ethnicity,
                 activeColor: darkBlueAccent,
@@ -149,12 +160,12 @@ class _AddProfilePageState extends State<AddProfilePage> {
             children: [
               Text(
                 "DOB",
-                style: basicText,
+                style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
               ),
               SizedBox(width: 10),
               FlatButton(
                   //elevation: 8.0,
-                  child: Text(_dob),
+                  child: Text(_dob,style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
                   textColor: backBlue,
                   color: newBlue,
                   onPressed: () => _selectDate(context)),
@@ -166,7 +177,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
           ElevatedButton(
               style: elevatedButtonStyle,
               onPressed: _submit,
-              child: Text("Submit"))
+              child: Text("Submit",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),))
         ],
       ),
     );
@@ -189,14 +200,14 @@ class _AddProfilePageState extends State<AddProfilePage> {
   }
 
 
-  _submit(){
+  _submit() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
     if (_nameController == "" || _dob == dateFormat(DateTime.now())){
       setState(() {
       _error = "Fields cannot be left blank";
       });
     }
-    else if(DataAccess.instance.profileExists(_nameController, email)){
+    else if(await DataAccess.instance.profileExists(_nameController, email)){
       setState(() {
         _error = "A Profile with this name already exists.";
       });

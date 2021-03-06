@@ -11,7 +11,7 @@ const basicText = TextStyle(
     //color: darkBlueAccent
 );
 
-TextStyle appBarStyle = TextStyle(color: Colors.white);
+TextStyle appBarStyle = TextStyle(color: Colors.white,fontSize: 18);
 
 const flatButtonText = TextStyle(
   color: newBlue,
@@ -124,3 +124,4 @@ String getStage(double egfr){
     return "5";
   }
 }
+

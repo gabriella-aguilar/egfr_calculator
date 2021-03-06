@@ -20,17 +20,27 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
 
   double _creatine;
   Account _account;
+  int _fontShift = 0;
 
   @override
   void initState() {
     _creatine = -1;
     _account = Provider.of<ContextInfo>(context,listen: false).getCurrentAccount();
+    setStyles();
     super.initState();
   }
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    print("Building New Calc");
+
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
@@ -53,7 +63,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
           },
         ),
         backgroundColor: newBlue,
-        title: Text("New Calculation",style: appBarStyle,),
+        title: Text("New Calculation",style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),),
         centerTitle: true,
       ),
       body: ListView(
@@ -61,7 +71,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
         children: [Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Creatine: ",style: basicText,),
+            Text("Creatine: ",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
             SizedBox(height: 5,),
             TextField(
               keyboardType: TextInputType.number,
@@ -71,7 +81,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
               },
             ),
             SizedBox(height: 5,),
-            Text(_getUnit(),style: basicText,),
+            Text(_getUnit(),style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
             SizedBox(height: 5,),
             ElevatedButton(
                 onPressed: (){
@@ -79,7 +89,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
                     _calculate();
                   }
                 },
-                child: Text("Calculate"),
+                child: Text("Calculate",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
               style: elevatedButtonStyle,
             )
           ],
