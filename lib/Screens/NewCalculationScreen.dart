@@ -90,14 +90,20 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
             SizedBox(height: 5,),
             Text(_getUnit(),style: _basicText,),
             SizedBox(height: 5,),
-            ElevatedButton(
-                onPressed: (){
-                  if(_creatine != -1){
-                    _calculate();
-                  }
-                },
-                child: Text("Calculate",style: _basicText,),
-              style: elevatedButtonStyle,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(onPressed: _showPopUp,style: elevatedButtonStyle, child: Text("Info about EGFR",style: _basicText,)),
+                ElevatedButton(
+                    onPressed: (){
+                      if(_creatine != -1){
+                        _calculate();
+                      }
+                    },
+                    child: Text("Calculate",style: _basicText,),
+                  style: elevatedButtonStyle,
+                ),
+              ],
             )
           ],
         )],
@@ -150,6 +156,30 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
     Navigator.push(
       context,
       PageRouteBuilder(pageBuilder: (_, __, ___) => ViewCalculationPage()),
+    );
+  }
+
+  void _showPopUp() {
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String body = "cvbhnmfghbjkcvbnm, dfhjbnkmlbfhcjndkmslbjdfnkm hnjfkdlmshbfjvdnkshbjvfndskbhjfndk hfjndkshbfjdnskhbvjdcnkmbhvjfdn";
+        return AlertDialog(
+          title: new Text("Here's Some Info About EGFR Calculations:",style: _basicText,),
+          content: new Text(body,style: _basicText,),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new ElevatedButton(
+              style: elevatedButtonStyle,
+              child: new Text("Close",style: _basicText,),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
