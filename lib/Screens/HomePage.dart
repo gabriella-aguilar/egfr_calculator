@@ -120,6 +120,9 @@ class _HomePageState extends State<HomePage> {
       });
     }
     else{
+      setState(() {
+        mode = true;
+      });
       print("Profiles is empty or null");
     }
   }
