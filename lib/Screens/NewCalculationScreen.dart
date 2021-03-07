@@ -21,6 +21,20 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
   double _creatine;
   Account _account;
   int _fontShift = 0;
+  TextStyle _appBarStyle;
+  TextStyle _basicText;
+
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+
+    });
+  }
 
   @override
   void initState() {
@@ -29,14 +43,6 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
     setStyles();
     super.initState();
   }
-  void setStyles() async{
-    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
-    int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +69,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
           },
         ),
         backgroundColor: newBlue,
-        title: Text("New Calculation",style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+        title: Text("New Calculation",style: _appBarStyle,),
         centerTitle: true,
       ),
       body: ListView(
@@ -71,7 +77,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
         children: [Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Creatine: ",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+            Text("Creatine: ",style: _basicText,),
             SizedBox(height: 5,),
             TextField(
               keyboardType: TextInputType.number,
@@ -81,7 +87,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
               },
             ),
             SizedBox(height: 5,),
-            Text(_getUnit(),style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+            Text(_getUnit(),style: _basicText,),
             SizedBox(height: 5,),
             ElevatedButton(
                 onPressed: (){
@@ -89,7 +95,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
                     _calculate();
                   }
                 },
-                child: Text("Calculate",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+                child: Text("Calculate",style: _basicText,),
               style: elevatedButtonStyle,
             )
           ],

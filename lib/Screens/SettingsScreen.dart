@@ -12,12 +12,28 @@ class SettingsScreen extends StatefulWidget{
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int _fontShift = 0;
+  int _fontShift;
+  int _slider;
   bool _unit;
   Account _account;
+  TextStyle _appBarStyle;
+  TextStyle _basicText;
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _slider = f;
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+
+    });
+  }
 
   @override
   void initState() {
+    _slider = 0;
     _account = Provider.of<ContextInfo>(context,listen: false).getCurrentAccount();
     if(_account.getUnit() == 1){
       _unit = true;
@@ -29,20 +45,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
   }
 
-  void setStyles() async{
-    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
-    int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: newBlue,
-        title: Text("Settings",style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+        title: Text("Settings",style: _appBarStyle,),
         centerTitle: true,
         leading: Builder(
           builder: (BuildContext context) {
@@ -77,10 +85,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       Icon((_unit
                           ? Icons.radio_button_checked
-                          : Icons.radio_button_unchecked)),
+                          : Icons.radio_button_unchecked),size: 24 + _fontShift.toDouble(),),
                       Text(
                         "mmol/L",
-                        style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                        style: _basicText,
                       )
                     ],
                   )),
@@ -98,10 +106,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       Icon((_unit
                           ? Icons.radio_button_unchecked
-                          : Icons.radio_button_checked)),
+                          : Icons.radio_button_checked),size: 24 + _fontShift.toDouble(),),
                       Text(
                         "mg/dl",
-                        style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                        style: _basicText,
                       )
                     ],
                   )),
@@ -111,17 +119,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBox(
             height: 5,
           ),
-          Text("Font Size:",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+          Text("Font Size:",style: _basicText,),
           Slider(
-            value: _fontShift.toDouble(),
+            value: _slider.toDouble(),
             activeColor: darkBlueAccent,
             inactiveColor: newBlue,
             min: 0,
-            max: 15,
+            max: 10,
             divisions: 5,
             onChanged: (double value) {
               setState(() {
-                _fontShift = value.round();
+                _slider = value.round();
               });
             },
           ),
@@ -129,7 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: (){
                 _update();
               },
-              child: Text("Save",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),)
+              child: Text("Save",style: _basicText,)
           )
         ],
       ),
@@ -149,7 +157,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     DataAccess.instance.updateUnit(account);
-    DataAccess.instance.updateFontSize(account.getEmail(), _fontShift);
+    DataAccess.instance.updateFontSize(account.getEmail(), _slider);
     Provider.of<ContextInfo>(context,listen: false).setCurrentAccount(account);
 
   }

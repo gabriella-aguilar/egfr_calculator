@@ -22,6 +22,20 @@ class _AddProfilePageState extends State<AddProfilePage> {
   bool _ethnicity;
   String _error;
   int _fontShift = 0;
+  TextStyle _appBarStyle;
+  TextStyle _basicText;
+  TextStyle _errorText;
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+      _errorText = errorTextStyle.copyWith(fontSize: 18 + f.toDouble());
+    });
+  }
 
   @override
   void initState() {
@@ -33,14 +47,6 @@ class _AddProfilePageState extends State<AddProfilePage> {
     _error = "";
     super.initState();
 
-  }
-
-  void setStyles() async{
-    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
-    int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-    });
   }
 
   @override
@@ -66,7 +72,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
         ),
         title: Text(
           "Add a Profile",
-          style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),
+          style: _appBarStyle,
         ),
         backgroundColor: newBlue,
         centerTitle: true,
@@ -74,11 +80,11 @@ class _AddProfilePageState extends State<AddProfilePage> {
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: [
-          Text(_error,style: errorTextStyle.copyWith(fontSize: 18+ _fontShift.toDouble()),),
+          Text(_error,style: _errorText,),
           Text(
             "Name",
-            style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
-          ),
+            style: _basicText),
+
           SizedBox(
             height: 5,
           ),
@@ -103,10 +109,10 @@ class _AddProfilePageState extends State<AddProfilePage> {
                     children: [
                       Icon((_gender
                           ? Icons.radio_button_checked
-                          : Icons.radio_button_unchecked)),
+                          : Icons.radio_button_unchecked),size: 24 + _fontShift.toDouble(),),
                       Text(
                         "Female",
-                        style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                        style: _basicText,
                       )
                     ],
                   )),
@@ -127,7 +133,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                           : Icons.radio_button_checked)),
                       Text(
                         "Male",
-                        style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                        style: _basicText,
                       )
                     ],
                   )),
@@ -140,7 +146,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
           Row(
             //mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Black Ethnicity',style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+              Text('Black Ethnicity',style: _basicText,),
               Checkbox(
                 value: _ethnicity,
                 activeColor: darkBlueAccent,
@@ -160,12 +166,12 @@ class _AddProfilePageState extends State<AddProfilePage> {
             children: [
               Text(
                 "DOB",
-                style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                style: _basicText,
               ),
               SizedBox(width: 10),
               FlatButton(
                   //elevation: 8.0,
-                  child: Text(_dob,style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+                  child: Text(_dob,style: _basicText,),
                   textColor: backBlue,
                   color: newBlue,
                   onPressed: () => _selectDate(context)),
@@ -177,7 +183,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
           ElevatedButton(
               style: elevatedButtonStyle,
               onPressed: _submit,
-              child: Text("Submit",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),))
+              child: Text("Submit",style: _basicText,))
         ],
       ),
     );

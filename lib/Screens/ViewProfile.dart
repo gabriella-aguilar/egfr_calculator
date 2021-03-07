@@ -22,7 +22,20 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   List<Calculation> _calculations;
   String _emailText = 'Export';
   int _fontShift = 0;
+  TextStyle _appBarStyle;
+  TextStyle _basicText;
 
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+
+    });
+  }
 
   List<Color> gradientColors = [
     const Color(0xff23b6e6),
@@ -37,13 +50,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     _getCalculations();
     super.initState();
   }
-  void setStyles() async{
-    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
-    int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,25 +59,25 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
         backgroundColor: newBlue,
         title: Text(
           _profile.getName(),
-          style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),
+          style: _appBarStyle,
         ),
         centerTitle: true,
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: [
-          Text(_profile.getName(), style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble())),
+          Text(_profile.getName(), style: _basicText),
           Text(
             "DOB: " + dateFormat(DateTime.parse(_profile.getDOB())),
-            style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+            style: _basicText,
           ),
           Text(
             "Gender: " + (_profile.getGender() == 1 ? "Female" : "Male"),
-            style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+            style: _basicText,
           ),
           Text(
             "Black Ethnicity: " + (_profile.getEthnicity() == 1 ? "Yes" : "No"),
-            style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+            style: _basicText,
           ),
           SizedBox(
             height: 5,
@@ -92,8 +99,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             },
             child: Row(
               children: [
-                Icon(Icons.add_box_rounded),
-                Text("New eGFR Calculation",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),)
+                Icon(Icons.add_box_rounded,size: 24 + _fontShift.toDouble(),),
+                Text("New eGFR Calculation",style: _basicText,)
               ],
             ),
             style: elevatedButtonStyle,
@@ -108,7 +115,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               );
             },
             child: Row(
-              children: [Icon(Icons.edit), Text("Edit Data",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),)],
+              children: [Icon(Icons.edit,size: 24+_fontShift.toDouble(),), Text("Edit Data",style: _basicText,)],
             ),
             style: elevatedButtonStyle,
           ),
@@ -119,7 +126,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               print(_emailText);
             },
             child: Row(
-              children: [Icon(Icons.share), Text("Export",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),)],
+              children: [Icon(Icons.share,size: 24+_fontShift.toDouble(),), Text("Export",style: _basicText,)],
             ),
             style: elevatedButtonStyle,
           ),

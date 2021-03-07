@@ -17,6 +17,19 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
   Calculation _calculation;
   String _stage;
   int _fontShift = 0;
+  TextStyle _appBarStyle;
+  TextStyle _basicText;
+
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+    });
+  }
 
   @override
   void initState() {
@@ -26,21 +39,13 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
     super.initState();
   }
 
-  void setStyles() async{
-    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
-    int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: newBlue,
-        title: Text("Calculation Results",style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+        title: Text("Calculation Results",style: _appBarStyle,),
         centerTitle: true,
       ),
       body: ListView(
@@ -57,9 +62,9 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
             ),
             child: Column(
               children: [
-                Text("Stage "+_stage, style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+                Text("Stage "+_stage, style: _basicText,),
                 SizedBox(height: 5),
-                Text("eGFR: "+ _calculation.getEgfr().toString(),style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+                Text("eGFR: "+ _calculation.getEgfr().toString(),style: _basicText,),
                 ButtonBar(
                   alignment: MainAxisAlignment.center,
                   children: [
@@ -72,7 +77,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
                             PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
                           );
                         },
-                        child: Text("Save",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+                        child: Text("Save",style: _basicText,),
                       style: elevatedButtonStyle,
                     ),
                     ElevatedButton(
@@ -84,7 +89,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
                           );
                         },
                         style: elevatedButtonStyle,
-                        child: Text("Discard",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),)
+                        child: Text("Discard",style: _basicText,)
                     )
                   ],
                 )

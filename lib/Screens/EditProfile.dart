@@ -22,6 +22,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool _ethnicity;
   String _error;
   int _fontShift = 0;
+  TextStyle _appBarStyle;
+  TextStyle _basicText;
+  TextStyle _errorText;
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+      _errorText = errorTextStyle.copyWith(fontSize: 18 + f.toDouble());
+    });
+  }
 
   @override
   void initState() {
@@ -45,13 +59,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
   }
 
-  void setStyles() async{
-    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
-    int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +84,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: newBlue,
         title: Text(
           "Edit Profile",
-          style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),
+          style: _appBarStyle,
         ),
         centerTitle: true,
       ),
@@ -86,11 +93,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             Text(
               _error,
-              style: errorTextStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),
+              style: _errorText,
             ),
             Text(
               "Name",
-              style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+              style: _basicText,
             ),
             SizedBox(
               height: 5,
@@ -117,10 +124,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         Icon((_gender
                             ? Icons.radio_button_checked
-                            : Icons.radio_button_unchecked)),
+                            : Icons.radio_button_unchecked),size: 24 + _fontShift.toDouble(),),
                         Text(
                           "Female",
-                          style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                          style: _basicText,
                         )
                       ],
                     )),
@@ -137,10 +144,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         Icon((_gender
                             ? Icons.radio_button_unchecked
-                            : Icons.radio_button_checked)),
+                            : Icons.radio_button_checked),size: 24 + _fontShift.toDouble(),),
                         Text(
                           "Male",
-                          style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                          style: _basicText,
                         )
                       ],
                     )),
@@ -154,7 +161,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 Text(
                   'Black Ethnicity',
-                  style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                  style: _basicText,
                 ),
                 Checkbox(
                   value: _ethnicity,
@@ -175,12 +182,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 Text(
                   "DOB",
-                  style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),
+                  style: _basicText,
                 ),
                 SizedBox(width: 10),
                 FlatButton(
                     //elevation: 8.0,
-                    child: Text(_dob,style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble())),
+                    child: Text(_dob,style: _basicText),
                     textColor: backBlue,
                     color: newBlue,
                     onPressed: () => _selectDate(context)),
@@ -192,7 +199,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ElevatedButton(
                 style: elevatedButtonStyle,
                 onPressed: _submit,
-                child: Text("Submit",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble())))
+                child: Text("Submit",style: _basicText))
           ]),
     );
   }

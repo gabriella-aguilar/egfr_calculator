@@ -16,9 +16,24 @@ class HomePage extends StatefulWidget{
 
 class _HomePageState extends State<HomePage> {
 
-  bool mode; //true -> normal false-> editting
+  bool mode; //true -> normal false-> editing
   List<Profile> profiles;
   int _fontShift = 0;
+  TextStyle _appBarStyle;
+  TextStyle _basicText;
+
+
+  void setStyles() async{
+    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
+    int f = await DataAccess.instance.getFontSize(email);
+    setState(() {
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+
+    });
+  }
+
 
   @override
   void initState() {
@@ -28,13 +43,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void setStyles() async{
-    String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
-    int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-    });
-  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> reg = [
@@ -70,7 +79,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: newBlue,
-        title: Text("Profiles",style: appBarStyle.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+        title: Text("Profiles",style: _appBarStyle,),
         centerTitle: true,
         actions:mode ? reg : editting
       ),
@@ -119,14 +128,14 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(element.getName(),style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),),
+                Text(element.getName(),style: _basicText,),
                 Opacity(
                   opacity: mode ? 0.0 : 1.0,
                   child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                        icon: Icon(Icons.edit,color: newBlue,),
+                        icon: Icon(Icons.edit,color: newBlue,size: 24 + _fontShift.toDouble(),),
                         onPressed: (){
                           if(!mode) {
                             Provider.of<ContextInfo>(context, listen: false)
@@ -136,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                         },
 
                     ),
-                    IconButton(icon: Icon(Icons.delete,color: newBlue,), onPressed: (){
+                    IconButton(icon: Icon(Icons.delete,color: newBlue,size: 24 + _fontShift.toDouble(),), onPressed: (){
                       if(!mode) {
                         _deleteProf(element.getName());
                       }
@@ -157,7 +166,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("No Profiles",style: basicText.copyWith(fontSize: 18 + _fontShift.toDouble()),)
+            Text("No Profiles",style: _basicText,)
           ],
         ),
       ));
