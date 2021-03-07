@@ -104,6 +104,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             TextFormField(
               initialValue: _nameController,
+              style: _basicText,
               decoration: inputDecoration,
               onChanged: (value) {
                 _nameController = value;

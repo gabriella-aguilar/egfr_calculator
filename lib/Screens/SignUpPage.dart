@@ -43,6 +43,7 @@ class _SignUpPageState extends State<SignUpPage> {
            SizedBox(height: 5,),
            TextField(
              decoration: inputDecoration,
+             style: basicText,
              autocorrect: false,
              onChanged: (value){
                _emailController = value;
@@ -53,6 +54,7 @@ class _SignUpPageState extends State<SignUpPage> {
            SizedBox(height: 5,),
            TextField(
              decoration: inputDecoration,
+             style: basicText,
              autocorrect: false,
              onChanged: (value){
                _confirmEmailController = value;
@@ -65,6 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
              obscureText: true,
              autocorrect: false,
              decoration: inputDecoration,
+             style: basicText,
              onChanged: (value){
                _passwordController = value;
              },
@@ -75,6 +78,7 @@ class _SignUpPageState extends State<SignUpPage> {
            TextField(
              obscureText: true,
              autocorrect: false,
+             style: basicText,
              decoration: inputDecoration,
              onChanged: (value){
                _confirmPasswordController = value;

@@ -59,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 5,),
                   TextField(
                     decoration: inputDecoration,
+                    style:basicText,
                     onChanged: (value){
                       _usernameController = value;
                     },
@@ -69,6 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     obscureText: true,
                     decoration: inputDecoration,
+                    style: basicText,
                     onChanged: (value){
                       _passwordController = value;
                     },
@@ -108,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
     Account account = await DataAccess.instance.getSpecificAccount(_usernameController);
     if(account != null && account.getPassword() == _passwordController){
       Provider.of<ContextInfo>(context, listen: false).setCurrentAccount(account);
+      Navigator.pop(context);
       Navigator.push(
         context,
         PageRouteBuilder(pageBuilder: (_, __, ___) => HomePage()),

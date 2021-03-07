@@ -90,6 +90,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
           ),
           TextField(
             decoration: inputDecoration,
+            style: _basicText,
             onChanged: (value) {
               _nameController = value;
             },

@@ -1,4 +1,5 @@
 import 'package:egfr_calculator/Screens/EditProfile.dart';
+import 'package:egfr_calculator/Screens/LoginScreen.dart';
 import 'package:egfr_calculator/Screens/SettingsScreen.dart';
 import 'package:egfr_calculator/Screens/ViewProfile.dart';
 import 'package:provider/provider.dart';
@@ -78,6 +79,25 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: backBlue,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => LoginPage()),
+                  );
+                },
+              );
+              //return Container();
+            },
+          ),
         backgroundColor: newBlue,
         title: Text("Profiles",style: _appBarStyle,),
         centerTitle: true,

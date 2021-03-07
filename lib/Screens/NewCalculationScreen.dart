@@ -82,6 +82,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
             TextField(
               keyboardType: TextInputType.number,
               decoration: inputDecoration,
+              style: _basicText,
               onChanged: (value){
                 _creatine = double.parse(value);
               },
