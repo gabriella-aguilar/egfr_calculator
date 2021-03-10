@@ -1,6 +1,6 @@
 import 'package:egfr_calculator/Classes/CalculationClass.dart';
 import 'package:egfr_calculator/Classes/ProfileClass.dart';
-import 'package:egfr_calculator/Components/CalcTable.dart';
+//import 'package:egfr_calculator/Components/CalcTable.dart';
 import 'package:egfr_calculator/DataAccess.dart';
 import 'package:egfr_calculator/Screens/NewCalculationScreen.dart';
 import 'package:egfr_calculator/Screens/PreEditDataPage.dart';
@@ -304,6 +304,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     if (c != null && c.isNotEmpty) {
       print("Num Calcs " + c.length.toString());
       setState(() {
+        _calculations.clear();
         _calculations.addAll(c);
       });
     }
@@ -363,7 +364,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
           borderRadius: BorderRadius.all(Radius.circular(10.0) //
           ),
         ),
-        child: CalcTable()
+        child: calcTable()
 
     );
   }
@@ -397,5 +398,53 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       throw 'Could not launch $url';
     }
 
+  }
+  Widget calcTable() {
+    if (_calculations != null && _calculations.isNotEmpty) {
+      List<DataRow> rows = new List();
+      _calculations.forEach((element) {
+        DateTime date = DateTime.parse(element.getDate());
+
+        rows.add(DataRow(cells: [
+          DataCell(Text(dateFormat(date),style: _basicText,)),
+          DataCell(Text(element.getEgfr().toStringAsFixed(3),style: _basicText,)),
+          DataCell(Text(getStage(element.getEgfr()),style: _basicText,)),
+          DataCell(IconButton(icon: Icon(Icons.delete,size: 24 + _fontShift.toDouble(),),
+            onPressed: (){
+              DataAccess.instance.deleteCalculation(element.getDate(), element.getProfile(), element.getAccount());
+              _getCalculations();
+            },))
+        ]));
+      });
+      return DataTable(
+          columnSpacing: 4,
+          columns: [
+            DataColumn(
+              label: Text(
+                'Date',
+                style: TextStyle(fontStyle: FontStyle.italic,fontSize: 18 + _fontShift.toDouble()),
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                'EGFR',
+                style: TextStyle(fontStyle: FontStyle.italic,fontSize: 18 + _fontShift.toDouble()),
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                'Stage',
+                style: TextStyle(fontStyle: FontStyle.italic,fontSize: 18 + _fontShift.toDouble()),
+              ),
+            ),
+            DataColumn(
+              label: Text(
+                '',
+                style: TextStyle(fontStyle: FontStyle.italic,fontSize: 18 + _fontShift.toDouble()),
+              ),
+            ),
+          ], rows: rows);
+    }
+    return Container();
   }
 }

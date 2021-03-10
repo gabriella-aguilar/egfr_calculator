@@ -135,6 +135,9 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
     DateTime dob = DateTime.parse(profile.getDOB());
     Duration dif = DateTime.now().difference(dob);
     int age = (dif.inDays / 365).truncate();
+    if(dif.inDays < 365){
+      age = 1;
+    }
     double egfr = 186 * pow((c / 88.4),-1.154) * pow(age,-0.203);
     if(profile.getGender() == 1){
       egfr = egfr *0.742;
