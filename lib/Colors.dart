@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const newBlue =  Colors.blue;
-const newBlue2 =  Colors.blueGrey;
+const newBlue =  const Color(4280892664);
+const newBlue2 =  const Color(4292860413);
 const darkBlueAccent = Colors.black;
 const darkBlueAccent2 = const Color(0xFF3C426B);
 const backBlue = Colors.white;
@@ -26,18 +26,28 @@ InputDecoration inputDecoration = InputDecoration(
   fillColor: Colors.white,
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(color: darkBlueAccent, ),
+    borderRadius: BorderRadius.all(
+        Radius.circular(30.0) //
+    ),
   ),
   focusedBorder: OutlineInputBorder(
     borderSide: BorderSide(color: darkBlueAccent, ),
+    borderRadius: BorderRadius.all(
+        Radius.circular(30.0) //
+    ),
   ),
   border: OutlineInputBorder(
     borderSide: BorderSide(color: darkBlueAccent, ),
+    borderRadius: BorderRadius.all(
+        Radius.circular(30.0) //
+    ),
   ),
 );
 
 var elevatedButtonStyle = ButtonStyle(
     backgroundColor: MaterialStateProperty.all<Color>(newBlue),
     textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(color: Colors.white,fontSize: 18)),
+
 );
 
 TextStyle errorTextStyle = TextStyle(

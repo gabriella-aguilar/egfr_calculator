@@ -38,68 +38,89 @@ class _LoginPageState extends State<LoginPage> {
         children: [Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Icon(Icons.account_circle,size: 150,color: newBlue,),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: newBlue2,
                 border: Border.all(color: darkBlueAccent),
                 borderRadius: BorderRadius.all(
-                    Radius.circular(10.0) //
+                    Radius.circular(30.0) //
                 ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     _error , style: errorTextStyle,
                   ),
                  // Text("Login",style: basicText,),
-                  Text("Username:",style: basicText,),
-                  SizedBox(height: 5,),
-                  TextField(
-                    decoration: inputDecoration,
-                    style:basicText,
-                    onChanged: (value){
-                      _usernameController = value;
-                    },
+                  Container(
+                    decoration: BoxDecoration(
+                      color: backBlue,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(5.0) //
+                      ),
+                    ),
+                    child: TextField(
+                      decoration: inputDecoration.copyWith(hintText: "Username"),
+                      style:basicText,
+                      onChanged: (value){
+                        _usernameController = value;
+                      },
+                    ),
                   ),
                   SizedBox(height: 15,),
-                  Text("Password:",style: basicText,),
-                  SizedBox(height: 5,),
-                  TextField(
-                    obscureText: true,
-                    decoration: inputDecoration,
-                    style: basicText,
-                    onChanged: (value){
-                      _passwordController = value;
-                    },
-                  ),
-                  ButtonBar(
-                    children:[
-                      FlatButton(
-                          onPressed: (){
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(pageBuilder: (_, __, ___) => SignUpPage()),
-                            );
-                          },
-                          child: Text(
-                            "Sign Up",
-                            style: flatButtonText
-                          )
+                  Container(
+                    decoration: BoxDecoration(
+                      color: backBlue,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(5.0) //
                       ),
-                      ElevatedButton(
-                        style: elevatedButtonStyle,
-                        onPressed: (){
-                          _login();
-                        },
-                        child: Text("Go!",style: basicText,)
-                    )],
-                  )
+                    ),
+                    child: TextField(
+                      obscureText: true,
+                      decoration: inputDecoration.copyWith(hintText: "Password",),
+                      style: basicText,
+                      onChanged: (value){
+                        _passwordController = value;
+                      },
+                    ),
+                  ),
+                  SizedBox(height:15),
+                  RaisedButton(
+                    color: newBlue,
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30.0),
+                    ),
+                    onPressed: (){
+                      _login();
+                    },
+                    child: Text("Go!",style: basicText.copyWith(color: backBlue),)
+                    )
                 ],
               ),
-            )
+            ),
+            SizedBox(height: 15,),
+            Text("-OR-",style: basicText,),
+            SizedBox(height: 15,),
+            RaisedButton(
+                onPressed: (){
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(pageBuilder: (_, __, ___) => SignUpPage()),
+                  );
+                },
+                child: Text(
+                    "Sign Up",
+                    style: basicText.copyWith(color: backBlue)
+                ),
+              color: newBlue,
+              shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0),
+              ),
+            ),
           ],
         )],
       ),

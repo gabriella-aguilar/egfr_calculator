@@ -29,6 +29,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
   Color _darkBlueAccent;
   Color _appBarBack;
   Color _iconColor;
+  Color _newBlue2;
 
   void setStyles() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
@@ -38,16 +39,18 @@ class _AddProfilePageState extends State<AddProfilePage> {
     Color color2 = darkBlueAccent;
     Color aBBack = newBlue;
     Color aColor = backBlue;
-
+    Color color3 = newBlue2;
     if(p == 1){
       color1 = Colors.black;
       color2 = Colors.black;
       aBBack = Colors.white;
+      color3 = Colors.white;
       aColor = color1;
     }
 
     setState(() {
       _appBarBack = aBBack;
+      _newBlue2 = color3;
       _fontShift = f;
       _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
       _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
@@ -103,111 +106,129 @@ class _AddProfilePageState extends State<AddProfilePage> {
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: [
-          Text(_error,style: _errorText,),
-          Text(
-            "Name",
-            style: _basicText),
-
-          SizedBox(
-            height: 5,
-          ),
-          TextField(
-            decoration: inputDecoration,
-            style: _basicText,
-            onChanged: (value) {
-              _nameController = value;
-            },
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Row(
-            children: [
-              FlatButton(
-                  onPressed: (){
-                    setState(() {
-                      _gender = true;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Icon((_gender
-                          ? Icons.radio_button_checked
-                          : Icons.radio_button_unchecked),size: 24 + _fontShift.toDouble(),),
-                      Text(
-                        "Female",
-                        style: _basicText,
-                      )
-                    ],
-                  )),
-              SizedBox(
-                height: 5,
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+            decoration: BoxDecoration(
+              color: _newBlue2,
+              border: Border.all(color: darkBlueAccent),
+              borderRadius: BorderRadius.all(
+                  Radius.circular(30.0) //
               ),
-              FlatButton(
-                  onPressed: (){
-                    setState(() {
-                      _gender = false;
-                    });
-                  },
+            ),
+            child: Column(
+              children: [
+                Text(_error,style: _errorText,),
+                Container(
+                  decoration: BoxDecoration(
+                    color: backBlue,
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(5.0) //
+                    ),
+                  ),
+                  child: TextField(
+                    decoration: inputDecoration.copyWith(hintText: "Name"),
+                    style: _basicText,
+                    onChanged: (value) {
+                      _nameController = value;
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    FlatButton(
+                        onPressed: (){
+                          setState(() {
+                            _gender = true;
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            Icon((_gender
+                                ? Icons.radio_button_checked
+                                : Icons.radio_button_unchecked),size: 24 + _fontShift.toDouble(),),
+                            Text(
+                              "Female",
+                              style: _basicText,
+                            )
+                          ],
+                        )),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    FlatButton(
+                        onPressed: (){
+                          setState(() {
+                            _gender = false;
+                          });
+                        },
 
-                  child: Row(
-                    children: [
-                      Icon((_gender
-                          ? Icons.radio_button_unchecked
-                          : Icons.radio_button_checked)),
-                      Text(
-                        "Male",
-                        style: _basicText,
-                      )
-                    ],
-                  )),
+                        child: Row(
+                          children: [
+                            Icon((_gender
+                                ? Icons.radio_button_unchecked
+                                : Icons.radio_button_checked)),
+                            Text(
+                              "Male",
+                              style: _basicText,
+                            )
+                          ],
+                        )),
 
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Row(
-            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Black Ethnicity',style: _basicText,),
-              Checkbox(
-                value: _ethnicity,
-                activeColor: _darkBlueAccent,
-                checkColor: _darkBlueAccent,
-                onChanged: (value) {
-                  setState(() {
-                    _ethnicity = value;
-                  });
-                },
-              )
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Row(
-            children: [
-              Text(
-                "DOB",
-                style: _basicText,
-              ),
-              SizedBox(width: 10),
-              FlatButton(
-                  //elevation: 8.0,
-                  child: Text(_dob,style: _basicText,),
-                  textColor: backBlue,
-                  color: _newBlue,
-                  onPressed: () => _selectDate(context)),
-            ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          ElevatedButton(
-              style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
-              onPressed: _submit,
-              child: Text("Submit",style: _basicText,))
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Black Ethnicity',style: _basicText,),
+                    Checkbox(
+                      value: _ethnicity,
+                      activeColor: _darkBlueAccent,
+                      checkColor: _darkBlueAccent,
+                      onChanged: (value) {
+                        setState(() {
+                          _ethnicity = value;
+                        });
+                      },
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "DOB",
+                      style: _basicText,
+                    ),
+                    SizedBox(width: 10),
+                    FlatButton(
+                      //elevation: 8.0,
+                        child: Text(_dob,style: _basicText,),
+                        textColor: backBlue,
+                        color: _newBlue,
+                        onPressed: () => _selectDate(context)),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                RaisedButton(
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30.0),
+                    ),
+                    color: _newBlue,
+                    onPressed: _submit,
+                    child: Text("Submit",style: _basicText.copyWith(color: backBlue),))
+              ],
+            ),
+          )
         ],
       ),
     );

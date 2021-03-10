@@ -23,6 +23,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
   Color _darkBlueAccent;
   Color _appBarBack;
   Color _iconColor;
+  Color _newBlue2;
 
   void setStyles() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
@@ -32,16 +33,18 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
     Color color2 = darkBlueAccent;
     Color aBBack = newBlue;
     Color aColor = backBlue;
-
+    Color color3 = newBlue2;
     if(p == 1){
       color1 = Colors.black;
       color2 = Colors.black;
       aBBack = Colors.white;
+      color3 = Colors.white;
       aColor = color1;
     }
 
     setState(() {
       _appBarBack = aBBack;
+      _newBlue2 = color3;
       _fontShift = f;
       _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
       _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
@@ -81,10 +84,10 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: _darkBlueAccent),
+              color: _newBlue2,
+              border: Border.all(color: darkBlueAccent),
               borderRadius: BorderRadius.all(
-                  Radius.circular(10.0) //
+                  Radius.circular(30.0) //
               ),
             ),
             child: Column(
@@ -95,7 +98,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
                 ButtonBar(
                   alignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
+                    RaisedButton(
                       onPressed: (){
                           DataAccess.instance.insertCalculation(_calculation);
                           Navigator.pop(context);
@@ -104,10 +107,13 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
                             PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
                           );
                         },
-                        child: Text("Save",style: _basicText,),
-                      style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
+                        child: Text("Save",style: _basicText.copyWith(color: backBlue),),
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0),
+                      ),
+                      color: _newBlue,
                     ),
-                    ElevatedButton(
+                    RaisedButton(
                         onPressed: (){
                           Navigator.pop(context);
                           Navigator.push(
@@ -115,8 +121,11 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
                             PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
                           );
                         },
-                        style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
-                        child: Text("Discard",style: _basicText,)
+                        shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0),
+                        ),
+                        color: _newBlue,
+                        child: Text("Discard",style: _basicText.copyWith(color: backBlue),)
                     )
                   ],
                 )

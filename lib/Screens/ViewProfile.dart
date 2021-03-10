@@ -104,29 +104,45 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
         children: [
-          Text(_profile.getName(), style: _basicText),
-          Text(
-            "DOB: " + dateFormat(DateTime.parse(_profile.getDOB())),
-            style: _basicText,
-          ),
-          Text(
-            "Gender: " + (_profile.getGender() == 1 ? "Female" : "Male"),
-            style: _basicText,
-          ),
-          Text(
-            "Black Ethnicity: " + (_profile.getEthnicity() == 1 ? "Yes" : "No"),
-            style: _basicText,
-          ),
+         Row(
+           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+           children: [
+           Column(
+             mainAxisAlignment: MainAxisAlignment.start,
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+             Text("Name: "+_profile.getName(), style: _basicText),
+             SizedBox(height: 10,),
+             Text(
+               "DOB: " + dateFormat(DateTime.parse(_profile.getDOB())),
+               style: _basicText,
+             ),
+           ],),
+           Column(
+             mainAxisAlignment: MainAxisAlignment.start,
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+             Text(
+               "Gender: " + (_profile.getGender() == 1 ? "Female" : "Male"),
+               style: _basicText,
+             ),
+               SizedBox(height: 10,),
+             Text(
+               "Black Ethnicity: " + (_profile.getEthnicity() == 1 ? "Yes" : "No"),
+               style: _basicText,
+             ),
+           ],),
+         ],),
           SizedBox(
-            height: 5,
+            height: 10,
           ),
            _calcGraph(),
-          SizedBox(height: 5,),
+          SizedBox(height: 10,),
           // _getSplineChart(),
           //_getCalcListCard(),
           _getCalcTableCard(),
-          SizedBox(height: 5,),
-          ElevatedButton(
+          SizedBox(height:10,),
+          RaisedButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(
@@ -136,23 +152,35 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               );
             },
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.add_box_rounded,size: 24 + _fontShift.toDouble(),),
-                Text("New eGFR Calculation",style: _basicText,)
+                Icon(Icons.add_box_rounded,size: 24 + _fontShift.toDouble(),color:backBlue),
+                SizedBox(width:5),
+                Text("New eGFR Calculation",style: _basicText.copyWith(color:backBlue),)
               ],
             ),
-            style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0),
+            ),
+            color: _newBlue,
           ),
-          ElevatedButton(
+          RaisedButton(
             onPressed: () {
               _createTextString();
 
               print(_emailText);
             },
             child: Row(
-              children: [Icon(Icons.share,size: 24+_fontShift.toDouble(),), Text("Export",style: _basicText,)],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.share,size: 24+_fontShift.toDouble(),color: backBlue,),
+                SizedBox(width:5),
+                Text("Export",style: _basicText.copyWith(color: backBlue),)],
             ),
-            style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0),
+            ),
+            color: _newBlue,
           ),
         ],
       ),

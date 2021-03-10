@@ -28,6 +28,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
   Color _darkBlueAccent ;
   Color _appBarBack;
   Color _iconColor;
+  Color _newBlue2;
 
   void setStyles() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
@@ -37,11 +38,13 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
     Color color2 = darkBlueAccent;
     Color aBBack = newBlue;
     Color aColor = backBlue;
+    Color color3 = newBlue2;
     TextStyle e = errorTextStyle.copyWith(fontSize: 18 + f.toDouble());
     if(p == 1){
       color1 = Colors.black;
       color2 = Colors.black;
       aBBack = Colors.white;
+      color3 = Colors.white;
       aColor = color1;
       e = errorTextStyle.copyWith(fontSize: 20 + f.toDouble(),color: color1);
     }
@@ -54,6 +57,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
       _newBlue = color1;
       _darkBlueAccent = color2;
       _iconColor = aColor;
+      _newBlue2 = color3;
       _errorText = e;
     });
   }
@@ -99,35 +103,62 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
-        children: [Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(_error ? "Please enter a valid input" : "",style: _errorText,),
-            Text("Creatine: ",style: _basicText,),
-            SizedBox(height: 5,),
-            TextField(
-              keyboardType: TextInputType.number,
-              decoration: inputDecoration,
-              style: _basicText,
-              onChanged: (value){
-                _creatine = double.tryParse(value);
-              },
+        children: [Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+          decoration: BoxDecoration(
+            color: _newBlue2,
+            border: Border.all(color: darkBlueAccent),
+            borderRadius: BorderRadius.all(
+                Radius.circular(30.0) //
             ),
-            SizedBox(height: 5,),
-            Text(_getUnit(),style: _basicText,),
-            SizedBox(height: 5,),
-            ElevatedButton(onPressed: _showPopUp,style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)), child: Text("Info about EGFR",style: _basicText,)),
-            ElevatedButton(
-              onPressed: (){
-                if(_creatine != -1){
-                  _calculate();
-                }
-              },
-              child: Text("Calculate",style: _basicText,),
-              style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
-            )
-          ],
-        )],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(_error ? "Please enter a valid input" : "",style: _errorText,),
+              Container(
+                decoration: BoxDecoration(
+                  color: backBlue,
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(5.0) //
+                  ),
+                ),
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  decoration: inputDecoration.copyWith(hintText: ("Creatine in "+_getUnit())),
+                  style: _basicText,
+                  onChanged: (value){
+                    _creatine = double.tryParse(value);
+                  },
+                ),
+              ),
+
+              SizedBox(height: 5,),
+
+              RaisedButton(
+                onPressed: (){
+                  if(_creatine != -1){
+                    _calculate();
+                  }
+                },
+                child: Text("Calculate",style: _basicText.copyWith(color: backBlue),),
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0),
+                ),
+                color: _newBlue,
+              )
+            ],
+          ),
+        ),
+        SizedBox(height: 15),
+        RaisedButton(
+            onPressed: _showPopUp,
+            shape: new RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(30.0),
+            ),
+            color: _newBlue,
+            child: Text("Info about EGFR",style: _basicText.copyWith(color: backBlue),)
+        ),]
       ),
     );
   }
@@ -207,9 +238,12 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
           content: new Text(body,style: _basicText,),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new ElevatedButton(
-              style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
-              child: new Text("Close",style: _basicText,),
+            new RaisedButton(
+              color: newBlue,
+              shape: new RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(30.0),
+              ),
+              child: new Text("Close",style: _basicText.copyWith(color:backBlue),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
