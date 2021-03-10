@@ -56,14 +56,18 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
     _calculation = Provider.of<ContextInfo>(context, listen: false).getCurrentCalculation();
     double egfr = _calculation.getEgfr();
     _stage = getStage(egfr);
+    setStyles();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     if(_newBlue == null){
+
       return Container();
     }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

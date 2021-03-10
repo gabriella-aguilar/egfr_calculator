@@ -17,12 +17,13 @@ class NewCalculationPage extends StatefulWidget{
 }
 
 class _NewCalculationPageState extends State<NewCalculationPage> {
-
+  bool _error;
   double _creatine;
   Account _account;
   int _fontShift = 0;
   TextStyle _appBarStyle;
   TextStyle _basicText;
+  TextStyle _errorText;
   Color _newBlue ;
   Color _darkBlueAccent ;
   Color _appBarBack;
@@ -36,12 +37,13 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
     Color color2 = darkBlueAccent;
     Color aBBack = newBlue;
     Color aColor = backBlue;
-
+    TextStyle e = errorTextStyle.copyWith(fontSize: 18 + f.toDouble());
     if(p == 1){
       color1 = Colors.black;
       color2 = Colors.black;
       aBBack = Colors.white;
       aColor = color1;
+      e = errorTextStyle.copyWith(fontSize: 20 + f.toDouble(),color: color1);
     }
 
     setState(() {
@@ -52,11 +54,13 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
       _newBlue = color1;
       _darkBlueAccent = color2;
       _iconColor = aColor;
+      _errorText = e;
     });
   }
 
   @override
   void initState() {
+    _error = false;
     _creatine = -1;
     _account = Provider.of<ContextInfo>(context,listen: false).getCurrentAccount();
     setStyles();
@@ -98,6 +102,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
         children: [Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(_error ? "Please enter a valid input" : "",style: _errorText,),
             Text("Creatine: ",style: _basicText,),
             SizedBox(height: 5,),
             TextField(
@@ -105,7 +110,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
               decoration: inputDecoration,
               style: _basicText,
               onChanged: (value){
-                _creatine = double.parse(value);
+                _creatine = double.tryParse(value);
               },
             ),
             SizedBox(height: 5,),
@@ -113,12 +118,12 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
             SizedBox(height: 5,),
             ElevatedButton(onPressed: _showPopUp,style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)), child: Text("Info about EGFR",style: _basicText,)),
             ElevatedButton(
-                onPressed: (){
-                  if(_creatine != -1){
-                    _calculate();
-                  }
-                },
-                child: Text("Calculate",style: _basicText,),
+              onPressed: (){
+                if(_creatine != -1){
+                  _calculate();
+                }
+              },
+              child: Text("Calculate",style: _basicText,),
               style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
             )
           ],
@@ -126,6 +131,8 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
       ),
     );
   }
+
+
 
   String _getUnit(){
     if(_account.getUnit() == 1){
@@ -135,47 +142,58 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
   }
 
   double _convertCreatine(double start){
-      return (start / 18);
+    return (start / 18);
   }
 
   _calculate(){
-    Profile profile = Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
+    if(_creatine != null && _creatine > 0){
 
-    double c;
-    if(_account.getUnit() == 2){
-      c = _convertCreatine(_creatine);
+      Profile profile =
+      Provider.of<ContextInfo>(context, listen: false).getCurrentProfile();
+
+      double c;
+
+      if (_account.getUnit() == 2) {
+        c = _convertCreatine(_creatine);
+      } else {
+        c = _creatine;
+      }
+
+      DateTime dob = DateTime.parse(profile.getDOB());
+      Duration dif = DateTime.now().difference(dob);
+      int age = (dif.inDays / 365).truncate();
+      if (dif.inDays < 365) {
+        age = 1;
+      }
+      double egfr = 186 * pow((c / 88.4), -1.154) * pow(age, -0.203);
+      if (profile.getGender() == 1) {
+        egfr = egfr * 0.742;
+      }
+      if (profile.getEthnicity() == 1) {
+        egfr = egfr * 1.21;
+      }
+
+      Calculation calculation = new Calculation(
+          date: DateTime.now().toString(),
+          egfr: egfr,
+          account: Provider.of<ContextInfo>(context, listen: false)
+              .getCurrentAccount()
+              .getEmail(),
+          profile: profile.getName());
+
+      Provider.of<ContextInfo>(context, listen: false)
+          .setCurrentCalculation(calculation);
+
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        PageRouteBuilder(pageBuilder: (_, __, ___) => ViewCalculationPage()),
+      );
     }else{
-      c = _creatine;
+      setState(() {
+        _error = true;
+      });
     }
-
-    DateTime dob = DateTime.parse(profile.getDOB());
-    Duration dif = DateTime.now().difference(dob);
-    int age = (dif.inDays / 365).truncate();
-    if(dif.inDays < 365){
-      age = 1;
-    }
-    double egfr = 186 * pow((c / 88.4),-1.154) * pow(age,-0.203);
-    if(profile.getGender() == 1){
-      egfr = egfr *0.742;
-    }
-    if(profile.getEthnicity() == 1){
-      egfr = egfr * 1.21;
-    }
-
-    Calculation calculation = new Calculation(
-        date: DateTime.now().toString(),
-        egfr: egfr,
-      account: Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail(),
-      profile: profile.getName()
-    );
-
-
-    Provider.of<ContextInfo>(context, listen: false).setCurrentCalculation(calculation);
-    Navigator.pop(context);
-    Navigator.push(
-      context,
-      PageRouteBuilder(pageBuilder: (_, __, ___) => ViewCalculationPage()),
-    );
   }
 
   void _showPopUp() {
