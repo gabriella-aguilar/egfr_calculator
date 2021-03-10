@@ -25,15 +25,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextStyle _appBarStyle;
   TextStyle _basicText;
   TextStyle _errorText;
+  Color _newBlue;
+  Color _darkBlueAccent;
+  Color _appBarBack;
+  Color _iconColor;
 
   void setStyles() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
     int f = await DataAccess.instance.getFontSize(email);
+    int p = await DataAccess.instance.getPalette(email);
+    Color color1 = newBlue;
+    Color color2 = darkBlueAccent;
+    Color aBBack = newBlue;
+    Color aColor = backBlue;
+
+    if(p == 1){
+      color1 = Colors.black;
+      color2 = Colors.black;
+      aBBack = Colors.white;
+      aColor = color1;
+    }
+
     setState(() {
+      _appBarBack = aBBack;
       _fontShift = f;
-      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
       _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
-      _errorText = errorTextStyle.copyWith(fontSize: 18 + f.toDouble());
+      _newBlue = color1;
+      _darkBlueAccent = color2;
+      _iconColor = aColor;
     });
   }
 
@@ -62,14 +82,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(_newBlue == null){
+      return Container();
+    }
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(
+              icon:  Icon(
                 Icons.arrow_back,
-                color: backBlue,
+                color: _iconColor,
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -81,7 +104,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             );
           },
         ),
-        backgroundColor: newBlue,
+        backgroundColor: _appBarBack,
         title: Text(
           "Edit Profile",
           style: _appBarStyle,
@@ -166,8 +189,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 Checkbox(
                   value: _ethnicity,
-                  activeColor: darkBlueAccent,
-                  checkColor: darkBlueAccent,
+                  activeColor: _darkBlueAccent,
+                  checkColor: _darkBlueAccent,
                   onChanged: (value) {
                     setState(() {
                       _ethnicity = value;
@@ -190,7 +213,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     //elevation: 8.0,
                     child: Text(_dob,style: _basicText),
                     textColor: backBlue,
-                    color: newBlue,
+                    color: _newBlue,
                     onPressed: () => _selectDate(context)),
               ],
             ),
@@ -198,7 +221,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               height: 5,
             ),
             ElevatedButton(
-                style: elevatedButtonStyle,
+                style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
                 onPressed: _submit,
                 child: Text("Submit",style: _basicText))
           ]),

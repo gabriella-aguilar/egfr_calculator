@@ -24,18 +24,39 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
   int _fontShift = 0;
   TextStyle _appBarStyle;
   TextStyle _basicText;
-
+  Color _newBlue;
+  Color _darkBlueAccent;
+  Color _appBarBack;
+  Color _iconColor;
 
   void setStyles() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
     int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
-      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+    int p = await DataAccess.instance.getPalette(email);
+    Color color1 = newBlue;
+    Color color2 = darkBlueAccent;
+    Color aBBack = newBlue;
+    Color aColor = backBlue;
 
+    if(p == 1){
+      color1 = Colors.black;
+      color2 = Colors.black;
+      aBBack = Colors.white;
+      aColor = color1;
+    }
+
+    setState(() {
+      _appBarBack = aBBack;
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+      _newBlue = color1;
+      _darkBlueAccent = color2;
+      _iconColor = aColor;
+      gradientColors = [_newBlue,_newBlue];
     });
   }
+
 
   List<Color> gradientColors = [
     const Color(0xff23b6e6),
@@ -54,9 +75,26 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    if(_newBlue == null){
+      return Container();
+    }
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: newBlue,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color:_iconColor,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+
+              },
+            );
+          },
+        ),
+        backgroundColor: _appBarBack,
         title: Text(
           _profile.getName(),
           style: _appBarStyle,
@@ -103,21 +141,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                 Text("New eGFR Calculation",style: _basicText,)
               ],
             ),
-            style: elevatedButtonStyle,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => PreEditDataPage()),
-              );
-            },
-            child: Row(
-              children: [Icon(Icons.edit,size: 24+_fontShift.toDouble(),), Text("Edit Data",style: _basicText,)],
-            ),
-            style: elevatedButtonStyle,
+            style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -128,7 +152,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             child: Row(
               children: [Icon(Icons.share,size: 24+_fontShift.toDouble(),), Text("Export",style: _basicText,)],
             ),
-            style: elevatedButtonStyle,
+            style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
           ),
         ],
       ),
@@ -162,7 +186,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
           padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: darkBlueAccent),
+            border: Border.all(color: _darkBlueAccent),
             borderRadius: BorderRadius.all(
                 Radius.circular(10.0) //
             ),
@@ -344,7 +368,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
         //padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: darkBlueAccent),
+          border: Border.all(color: _darkBlueAccent),
           borderRadius: BorderRadius.all(Radius.circular(10.0) //
           ),
         ),
@@ -360,7 +384,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       //padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: darkBlueAccent),
+          border: Border.all(color: _darkBlueAccent),
           borderRadius: BorderRadius.all(Radius.circular(10.0) //
           ),
         ),

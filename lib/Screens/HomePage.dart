@@ -22,16 +22,35 @@ class _HomePageState extends State<HomePage> {
   int _fontShift = 0;
   TextStyle _appBarStyle;
   TextStyle _basicText;
-
+  Color _newBlue;
+  Color _darkBlueAccent;
+  Color _appBarBack;
+  Color _iconColor;
 
   void setStyles() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
     int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
-      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+    int p = await DataAccess.instance.getPalette(email);
+    Color color1 = newBlue;
+    Color color2 = darkBlueAccent;
+    Color aBBack = newBlue;
+    Color aColor = backBlue;
 
+    if(p == 1){
+      color1 = Colors.black;
+      color2 = Colors.black;
+      aBBack = Colors.white;
+      aColor = color1;
+    }
+
+    setState(() {
+      _appBarBack = aBBack;
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+      _newBlue = color1;
+      _darkBlueAccent = color2;
+      _iconColor = aColor;
     });
   }
 
@@ -48,19 +67,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     List<Widget> reg = [
-      IconButton(icon: Icon(Icons.settings,color: Colors.white,size: 24 + _fontShift.toDouble(),), onPressed: (){
+      IconButton(icon: Icon(Icons.settings,color: _iconColor,size: 24 + _fontShift.toDouble(),), onPressed: (){
         Navigator.pop(context);
         Navigator.push(
           context,
           PageRouteBuilder(pageBuilder: (_, __, ___) => SettingsScreen()),
         );
       }),
-      IconButton(icon: Icon(Icons.edit,color: Colors.white,size: 24 + _fontShift.toDouble(),), onPressed: (){
+      IconButton(icon: Icon(Icons.edit,color: _iconColor,size: 24 + _fontShift.toDouble(),), onPressed: (){
         setState(() {
           mode = false;
         });
       }),
-      IconButton(icon: Icon(Icons.add_circle,color: Colors.white,size: 24 + _fontShift.toDouble(),), onPressed: (){
+      IconButton(icon: Icon(Icons.add_circle,color: _iconColor,size: 24 + _fontShift.toDouble(),), onPressed: (){
       Navigator.pop(context);
       Navigator.push(
         context,
@@ -70,21 +89,25 @@ class _HomePageState extends State<HomePage> {
     ];
 
     List<Widget> editting = [
-      IconButton(icon: Icon(Icons.done,color: Colors.white,size: 24 + _fontShift.toDouble(),), onPressed: (){
+      IconButton(icon: Icon(Icons.done,color: _iconColor,size: 24 + _fontShift.toDouble(),), onPressed: (){
         setState(() {
           mode = true;
         });
       }),
     ];
 
+    if(_newBlue == null){
+      return Container();
+    }
+
     return Scaffold(
       appBar: AppBar(
           leading: Builder(
             builder: (BuildContext context) {
               return IconButton(
-                icon: const Icon(
+                icon:  Icon(
                   Icons.arrow_back,
-                  color: backBlue,
+                  color: _iconColor,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
@@ -98,7 +121,7 @@ class _HomePageState extends State<HomePage> {
               //return Container();
             },
           ),
-        backgroundColor: newBlue,
+        backgroundColor: _appBarBack,
         title: Text("Profiles",style: _appBarStyle,),
         centerTitle: true,
         actions:mode ? reg : editting
@@ -145,7 +168,7 @@ class _HomePageState extends State<HomePage> {
             decoration: BoxDecoration(
               color: backBlue,
               border: Border(
-                bottom: BorderSide(width: 1.0, color: darkBlueAccent),
+                bottom: BorderSide(width: 1.0, color: _darkBlueAccent),
               ),
             ),
             child: Row(
@@ -158,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                        icon: Icon(Icons.edit,color: newBlue,size: 24 + _fontShift.toDouble(),),
+                        icon: Icon(Icons.edit,color: _newBlue,size: 24 + _fontShift.toDouble(),),
                         onPressed: (){
                           if(!mode) {
                             Provider.of<ContextInfo>(context, listen: false)
@@ -168,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                         },
 
                     ),
-                    IconButton(icon: Icon(Icons.delete,color: newBlue,size: 24 + _fontShift.toDouble(),), onPressed: (){
+                    IconButton(icon: Icon(Icons.delete,color: _newBlue,size: 24 + _fontShift.toDouble(),), onPressed: (){
                       if(!mode) {
                         _deleteProf(element.getName());
                       }

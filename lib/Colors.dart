@@ -5,6 +5,10 @@ const newBlue2 =  Colors.blueGrey;
 const darkBlueAccent = Colors.black;
 const darkBlueAccent2 = const Color(0xFF3C426B);
 const backBlue = Colors.white;
+const blueGreen = const Color(4286565819);
+const blueP2 = const Color(4281106360);
+const yellow = const Color(4293785777);
+
 //const backBlue2 = Colors.whi;
 const basicText = TextStyle(
     fontSize: 18,

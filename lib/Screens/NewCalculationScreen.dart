@@ -23,16 +23,35 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
   int _fontShift = 0;
   TextStyle _appBarStyle;
   TextStyle _basicText;
-
+  Color _newBlue ;
+  Color _darkBlueAccent ;
+  Color _appBarBack;
+  Color _iconColor;
 
   void setStyles() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
     int f = await DataAccess.instance.getFontSize(email);
-    setState(() {
-      _fontShift = f;
-      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
-      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+    int p = await DataAccess.instance.getPalette(email);
+    Color color1 = newBlue;
+    Color color2 = darkBlueAccent;
+    Color aBBack = newBlue;
+    Color aColor = backBlue;
 
+    if(p == 1){
+      color1 = Colors.black;
+      color2 = Colors.black;
+      aBBack = Colors.white;
+      aColor = color1;
+    }
+
+    setState(() {
+      _appBarBack = aBBack;
+      _fontShift = f;
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
+      _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+      _newBlue = color1;
+      _darkBlueAccent = color2;
+      _iconColor = aColor;
     });
   }
 
@@ -46,15 +65,17 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
 
   @override
   Widget build(BuildContext context) {
-
+    if(_newBlue == null){
+      return Container();
+    }
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back,
-                color: backBlue,
+                color: _iconColor,
               ),
               onPressed: () {
                 Navigator.pop(context);
@@ -68,7 +89,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
             //return Container();
           },
         ),
-        backgroundColor: newBlue,
+        backgroundColor: _appBarBack,
         title: Text("New Calculation",style: _appBarStyle,),
         centerTitle: true,
       ),
@@ -90,20 +111,15 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
             SizedBox(height: 5,),
             Text(_getUnit(),style: _basicText,),
             SizedBox(height: 5,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(onPressed: _showPopUp,style: elevatedButtonStyle, child: Text("Info about EGFR",style: _basicText,)),
-                ElevatedButton(
-                    onPressed: (){
-                      if(_creatine != -1){
-                        _calculate();
-                      }
-                    },
-                    child: Text("Calculate",style: _basicText,),
-                  style: elevatedButtonStyle,
-                ),
-              ],
+            ElevatedButton(onPressed: _showPopUp,style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)), child: Text("Info about EGFR",style: _basicText,)),
+            ElevatedButton(
+                onPressed: (){
+                  if(_creatine != -1){
+                    _calculate();
+                  }
+                },
+                child: Text("Calculate",style: _basicText,),
+              style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
             )
           ],
         )],
@@ -174,7 +190,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new ElevatedButton(
-              style: elevatedButtonStyle,
+              style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
               child: new Text("Close",style: _basicText,),
               onPressed: () {
                 Navigator.of(context).pop();

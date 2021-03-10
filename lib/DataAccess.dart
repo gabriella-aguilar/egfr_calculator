@@ -74,9 +74,21 @@ class DataAccess{
     await db.update('styles', row, where: "name = 'fontShift' AND account = ?",whereArgs: [account]);
   }
 
+  void updatePalette(String account,int palette) async{
+    final Database db = await database;
+    Map<String,dynamic> row = {'name':'palette','num':palette,'account':account};
+    await db.update('styles', row, where: "name = 'palette' AND account = ?",whereArgs: [account]);
+  }
+
   Future<int> getFontSize(String account) async {
     final Database db =await database;
     final List<Map<String, dynamic>> maps = await db.query('styles',where: "name = 'fontShift' AND account = ?",whereArgs: [account]);
+    return maps[0]['num'];
+  }
+
+  Future<int> getPalette(String account) async {
+    final Database db =await database;
+    final List<Map<String, dynamic>> maps = await db.query('styles',where: "name = 'palette' AND account = ?",whereArgs: [account]);
     return maps[0]['num'];
   }
 

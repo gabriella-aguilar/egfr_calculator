@@ -19,15 +19,35 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
   int _fontShift = 0;
   TextStyle _appBarStyle;
   TextStyle _basicText;
-
+  Color _newBlue;
+  Color _darkBlueAccent;
+  Color _appBarBack;
+  Color _iconColor;
 
   void setStyles() async{
     String email = Provider.of<ContextInfo>(context, listen: false).getCurrentAccount().getEmail();
     int f = await DataAccess.instance.getFontSize(email);
+    int p = await DataAccess.instance.getPalette(email);
+    Color color1 = newBlue;
+    Color color2 = darkBlueAccent;
+    Color aBBack = newBlue;
+    Color aColor = backBlue;
+
+    if(p == 1){
+      color1 = Colors.black;
+      color2 = Colors.black;
+      aBBack = Colors.white;
+      aColor = color1;
+    }
+
     setState(() {
+      _appBarBack = aBBack;
       _fontShift = f;
-      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble());
+      _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
       _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
+      _newBlue = color1;
+      _darkBlueAccent = color2;
+      _iconColor = aColor;
     });
   }
 
@@ -41,10 +61,13 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(_newBlue == null){
+      return Container();
+    }
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: newBlue,
+        backgroundColor: _appBarBack,
         title: Text("Calculation Results",style: _appBarStyle,),
         centerTitle: true,
       ),
@@ -55,7 +78,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
             padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: darkBlueAccent),
+              border: Border.all(color: _darkBlueAccent),
               borderRadius: BorderRadius.all(
                   Radius.circular(10.0) //
               ),
@@ -78,7 +101,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
                           );
                         },
                         child: Text("Save",style: _basicText,),
-                      style: elevatedButtonStyle,
+                      style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
                     ),
                     ElevatedButton(
                         onPressed: (){
@@ -88,7 +111,7 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
                             PageRouteBuilder(pageBuilder: (_, __, ___) => ViewProfilePage()),
                           );
                         },
-                        style: elevatedButtonStyle,
+                        style: elevatedButtonStyle.copyWith(backgroundColor: MaterialStateProperty.all<Color>(_newBlue)),
                         child: Text("Discard",style: _basicText,)
                     )
                   ],
