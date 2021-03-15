@@ -120,7 +120,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
                 decoration: BoxDecoration(
                   color: backBlue,
                   borderRadius: BorderRadius.all(
-                      Radius.circular(5.0) //
+                      Radius.circular(30.0) //
                   ),
                 ),
                 child: TextField(

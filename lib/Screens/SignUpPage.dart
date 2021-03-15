@@ -59,7 +59,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: BoxDecoration(
                       color: backBlue,
                       borderRadius: BorderRadius.all(
-                          Radius.circular(5.0) //
+                          Radius.circular(30.0) //
                       ),
                     ),
                     child: TextField(
@@ -78,7 +78,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: BoxDecoration(
                       color: backBlue,
                       borderRadius: BorderRadius.all(
-                          Radius.circular(5.0) //
+                          Radius.circular(30.0) //
                       ),
                     ),
                     child: TextField(
@@ -98,7 +98,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: BoxDecoration(
                       color: backBlue,
                       borderRadius: BorderRadius.all(
-                          Radius.circular(5.0) //
+                          Radius.circular(30.0) //
                       ),
                     ),
                     child: TextField(
@@ -118,7 +118,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: BoxDecoration(
                       color: backBlue,
                       borderRadius: BorderRadius.all(
-                          Radius.circular(5.0) //
+                          Radius.circular(30.0) //
                       ),
                     ),
                     child: TextField(

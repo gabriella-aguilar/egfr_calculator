@@ -138,7 +138,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       decoration: BoxDecoration(
                         color: backBlue,
                         borderRadius: BorderRadius.all(
-                            Radius.circular(5.0) //
+                            Radius.circular(30.0) //
                         ),
                       ),
                       child: TextFormField(
