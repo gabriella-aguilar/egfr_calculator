@@ -66,6 +66,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("building home");
     List<Widget> reg = [
       IconButton(icon: Icon(Icons.settings,color: _iconColor,size: 24 + _fontShift.toDouble(),), onPressed: (){
         Navigator.pop(context);
@@ -97,6 +98,8 @@ class _HomePageState extends State<HomePage> {
     ];
 
     if(_newBlue == null){
+      print("styles not set");
+      setStyles();
       return Container();
     }
 
