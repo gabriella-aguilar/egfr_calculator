@@ -150,6 +150,7 @@ class DataAccess{
       return Account(
           email: maps[i]['email'],
           password: maps[i]['password'],
+          unit: maps[i]['unit']
       );
     });
     if(list != null && list.isNotEmpty){
@@ -192,6 +193,7 @@ class DataAccess{
   }
 
   void updateUnit(Account account) async{
+    print('inside update unit');
     final Database db = await database;
     String email = account.getEmail();
     Map<String,dynamic> row = account.toMap();

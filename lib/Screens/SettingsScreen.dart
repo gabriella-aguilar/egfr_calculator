@@ -50,6 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _appBarBack = aBBack;
       _newBlue2 = color3;
       _fontShift = f;
+      _slider = f;
       _appBarStyle =
           appBarStyle.copyWith(fontSize: 18 + f.toDouble(), color: aColor);
       _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
@@ -117,57 +118,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
             ),
             child: Column(
-              //crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
-                Row(
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Unit:",
                       style: _basicText,
                     ),
-                    FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            _unit = true;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              (_unit
-                                  ? Icons.radio_button_checked
-                                  : Icons.radio_button_unchecked),
-                              size: 24 + _fontShift.toDouble(),
-                            ),
-                            Text(
-                              "mmol/L",
-                              style: _basicText,
-                            )
-                          ],
-                        )),
-                    SizedBox(
-                      height: 5,
+                    SizedBox(height: 5,),
+                    Row(
+                      children: [
+
+                        FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                _unit = true;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  (_unit
+                                      ? Icons.radio_button_checked
+                                      : Icons.radio_button_unchecked),
+                                  size: 24 + _fontShift.toDouble(),
+                                ),
+                                Text(
+                                  "mmol/L",
+                                  style: _basicText,
+                                )
+                              ],
+                            )),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                _unit = false;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(
+                                  (_unit
+                                      ? Icons.radio_button_unchecked
+                                      : Icons.radio_button_checked),
+                                  size: 24 + _fontShift.toDouble(),
+                                ),
+                                Text(
+                                  "mg/dl",
+                                  style: _basicText,
+                                )
+                              ],
+                            )),
+                      ],
                     ),
-                    FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            _unit = false;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              (_unit
-                                  ? Icons.radio_button_unchecked
-                                  : Icons.radio_button_checked),
-                              size: 24 + _fontShift.toDouble(),
-                            ),
-                            Text(
-                              "mg/dl",
-                              style: _basicText,
-                            )
-                          ],
-                        )),
                   ],
                 ),
                 SizedBox(

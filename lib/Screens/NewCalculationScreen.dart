@@ -172,9 +172,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
     return "mg/dL";
   }
 
-  double _convertCreatine(double start){
-    return (start / 18);
-  }
+
 
   _calculate(){
     if(_creatine != null && _creatine > 0){
@@ -185,7 +183,8 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
       double c;
 
       if (_account.getUnit() == 2) {
-        c = _convertCreatine(_creatine);
+        c = _creatine / 18.018;
+        print('new creatine '+c.toString());
       } else {
         c = _creatine;
       }
@@ -211,7 +210,7 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
               .getCurrentAccount()
               .getEmail(),
           profile: profile.getName());
-
+      print('egfr '+ egfr.toString());
       Provider.of<ContextInfo>(context, listen: false)
           .setCurrentCalculation(calculation);
 
