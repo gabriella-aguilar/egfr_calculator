@@ -195,7 +195,13 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
       if (dif.inDays < 365) {
         age = 1;
       }
-      double egfr = 186 * pow((c / 88.4), -1.154) * pow(age, -0.203);
+      double pow1 = pow(age, -0.203);
+      print('pow1 '+ pow1.toString());
+      double pow2 = pow((c / 88.4), -1.154);
+      print('pow2 '+ pow2.toString());
+      double egfr = pow2 * pow1;
+      print("mult " + egfr.toString());
+      egfr = egfr * 186;
       if (profile.getGender() == 1) {
         egfr = egfr * 0.742;
       }

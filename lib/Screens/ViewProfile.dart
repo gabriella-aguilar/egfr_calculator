@@ -3,7 +3,6 @@ import 'package:egfr_calculator/Classes/ProfileClass.dart';
 import 'package:egfr_calculator/Components/CalcTable.dart';
 import 'package:egfr_calculator/DataAccess.dart';
 import 'package:egfr_calculator/Screens/NewCalculationScreen.dart';
-import 'package:egfr_calculator/Screens/PreEditDataPage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -211,6 +210,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     _getCalculations();
     List<FlSpot> spots = new List<FlSpot>();
     Map<double, int> titles = new Map();
+    int index = 0;
+    List labels = List();
     _calculations.sort((a, b) => a.getDate().compareTo(b.getDate()));
     DateTime startX = null;
     _calculations.forEach((element) {
@@ -221,6 +222,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       Duration dif = date.difference(startX);
       double x = dif.inDays / 30;
       titles[x] = date.month;
+      labels.add(date.month);
       double egfr = element.getEgfr();
       spots.add(FlSpot(x, egfr));
     });
@@ -268,7 +270,11 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     fontWeight: FontWeight.bold,
                     fontSize: 16),
                 getTitles: (value) {
-                  switch (titles[value]) {
+                  return '';
+                  int x = titles[value];
+
+
+                  switch (x) {
                     case 1:
                       return "J";
                     case 2:
