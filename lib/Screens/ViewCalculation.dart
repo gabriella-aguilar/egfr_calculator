@@ -16,13 +16,10 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
 
   Calculation _calculation;
   String _stage;
-  int _fontShift = 0;
   TextStyle _appBarStyle;
   TextStyle _basicText;
   Color _newBlue;
-  Color _darkBlueAccent;
   Color _appBarBack;
-  Color _iconColor;
   Color _newBlue2;
 
   void setStyles() async{
@@ -30,13 +27,12 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
     int f = await DataAccess.instance.getFontSize(email);
     int p = await DataAccess.instance.getPalette(email);
     Color color1 = newBlue;
-    Color color2 = darkBlueAccent;
+
     Color aBBack = newBlue;
     Color aColor = backBlue;
     Color color3 = newBlue2;
     if(p == 1){
       color1 = Colors.black;
-      color2 = Colors.black;
       aBBack = Colors.white;
       color3 = Colors.white;
       aColor = color1;
@@ -45,12 +41,9 @@ class _ViewCalculationPageState extends State<ViewCalculationPage> {
     setState(() {
       _appBarBack = aBBack;
       _newBlue2 = color3;
-      _fontShift = f;
       _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
       _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
       _newBlue = color1;
-      _darkBlueAccent = color2;
-      _iconColor = aColor;
     });
   }
 

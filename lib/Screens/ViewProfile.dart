@@ -210,7 +210,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     _getCalculations();
     List<FlSpot> spots = new List<FlSpot>();
     Map<double, int> titles = new Map();
-    int index = 0;
+
     List labels = List();
     _calculations.sort((a, b) => a.getDate().compareTo(b.getDate()));
     DateTime startX = null;
@@ -271,37 +271,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     fontSize: 16),
                 getTitles: (value) {
                   return '';
-                  int x = titles[value];
-
-
-                  switch (x) {
-                    case 1:
-                      return "J";
-                    case 2:
-                      return "F";
-                    case 3:
-                      return "M";
-                    case 4:
-                      return "A";
-                    case 5:
-                      return "M";
-                    case 6:
-                      return "J";
-                    case 7:
-                      return "J";
-                    case 8:
-                      return "A";
-                    case 9:
-                      return "S";
-                    case 10:
-                      return "O";
-                    case 11:
-                      return "N";
-                    case 12:
-                      return "D";
-                    default:
-                      return '';
-                  }
                 },
                 margin: 8,
               ),
@@ -341,15 +310,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
             lineBarsData: [
               LineChartBarData(
                 spots: spots,
-                // [
-                //   FlSpot(0, 3),
-                //   FlSpot(2.6, 2),
-                //   FlSpot(4.9, 5),
-                //   FlSpot(6.8, 3.1),
-                //   FlSpot(8, 4),
-                //   FlSpot(9.5, 3),
-                //   FlSpot(11, 4),
-                // ],
                 isCurved: true,
                 colors: gradientColors,
                 barWidth: 5,
@@ -369,15 +329,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
         ));
   }
 
-  List<FlSpot> _getSpots() {
-    List<FlSpot> spots = new List<FlSpot>();
-    _calculations.forEach((element) {
-      DateTime date = DateTime.parse(element.getDate());
-      double x = date.month + (date.day / 30);
-      spots.add(FlSpot(x, element.getEgfr()));
-    });
-    return spots;
-  }
 
   _getCalculations() async {
     List<Calculation> c = await DataAccess.instance
@@ -390,63 +341,6 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
       });
     }
   }
-
-  Widget _getCalcListCard() {
-    if (_calculations != null && _calculations.isNotEmpty) {
-      List<Widget> tiles = new List<Widget>();
-      _calculations.forEach((element) {
-        double egfr = element.getEgfr();
-        String _stage = "Stage ";
-        if (egfr >= 90) {
-          _stage += "1";
-        } else if (egfr < 90 && egfr >= 60) {
-          _stage += "2";
-        } else if (egfr < 60 && egfr >= 45) {
-          _stage += "3A";
-        } else if (egfr < 45 && egfr >= 30) {
-          _stage += "3B";
-        } else if (egfr < 30 && egfr >= 15) {
-          _stage += "4";
-        } else {
-          _stage += "5";
-        }
-        tiles.add(ListTile(
-          title: Text(
-            dateFormat(DateTime.parse(element.getDate())),
-            style: basicText,
-          ),
-          subtitle: Text(element.getEgfr().toString()),
-          trailing: Text(_stage, style: basicText),
-        ));
-      });
-      return Container(
-          //padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: _darkBlueAccent),
-            borderRadius: BorderRadius.all(Radius.circular(10.0) //
-                ),
-          ),
-          child: Column(
-            children: tiles,
-          ));
-    }
-    return Container(
-      height: 0,
-    );
-  }
-
-  // Widget _getCalcTableCard() {
-  //   return Container(
-  //       //padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
-  //       decoration: BoxDecoration(
-  //         color: Colors.white,
-  //         border: Border.all(color: _darkBlueAccent),
-  //         borderRadius: BorderRadius.all(Radius.circular(10.0) //
-  //             ),
-  //       ),
-  //       child: calcTable());
-  // }
 
   _createTextString() {
     String t = '';

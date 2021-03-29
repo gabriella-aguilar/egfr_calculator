@@ -20,12 +20,10 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
   bool _error;
   double _creatine;
   Account _account;
-  int _fontShift = 0;
   TextStyle _appBarStyle;
   TextStyle _basicText;
   TextStyle _errorText;
   Color _newBlue ;
-  Color _darkBlueAccent ;
   Color _appBarBack;
   Color _iconColor;
   Color _newBlue2;
@@ -35,14 +33,13 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
     int f = await DataAccess.instance.getFontSize(email);
     int p = await DataAccess.instance.getPalette(email);
     Color color1 = newBlue;
-    Color color2 = darkBlueAccent;
+
     Color aBBack = newBlue;
     Color aColor = backBlue;
     Color color3 = newBlue2;
     TextStyle e = errorTextStyle.copyWith(fontSize: 18 + f.toDouble());
     if(p == 1){
       color1 = Colors.black;
-      color2 = Colors.black;
       aBBack = Colors.white;
       color3 = Colors.white;
       aColor = color1;
@@ -51,11 +48,9 @@ class _NewCalculationPageState extends State<NewCalculationPage> {
 
     setState(() {
       _appBarBack = aBBack;
-      _fontShift = f;
       _appBarStyle = appBarStyle.copyWith(fontSize: 18 + f.toDouble(),color: aColor);
       _basicText = basicText.copyWith(fontSize: 18 + f.toDouble());
       _newBlue = color1;
-      _darkBlueAccent = color2;
       _iconColor = aColor;
       _newBlue2 = color3;
       _errorText = e;
